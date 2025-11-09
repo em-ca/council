@@ -41,6 +41,37 @@
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         min-width: 250px;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+        transition: transform 0.3s ease;
+      }
+      .controls.collapsed {
+        transform: translateX(-100%);
+      }
+      .controls.collapsed .toggle-controls {
+        transform: translateX(100%);
+      }
+      .toggle-controls {
+        position: absolute;
+        top: 10px;
+        right: -40px;
+        background: rgba(20, 20, 20, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+        padding: 10px 8px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        z-index: 101;
+      }
+      .toggle-controls:hover {
+        background: rgba(40, 40, 40, 0.95);
+      }
+      .toggle-controls svg {
+        display: block;
+        width: 20px;
+        height: 20px;
+        fill: #4caf50;
       }
       .controls h3 {
         margin: 0 0 15px 0;
@@ -229,15 +260,20 @@
           top: 10px;
           left: 10px;
           padding: 15px;
+          min-width: 220px;
+        }
+        .controls.collapsed {
+          transform: translateX(calc(-100% - 10px));
+        }
+        .toggle-controls {
+          right: -35px;
+          padding: 8px 6px;
         }
         .stats {
           display: none;
         }
         .info {
-          bottom: 10px;
-          right: 10px;
-          padding: 12px;
-          font-size: 11px;
+          display: none;
         }
         .zone-legend {
           display: none;
@@ -247,7 +283,12 @@
   </head>
   <body>
     <div id="canvas-container"></div>
-    <div class="controls">
+    <div class="controls" id="controlsPanel">
+      <div class="toggle-controls" id="toggleControls">
+        <svg viewBox="0 0 24 24">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </div>
       <h3>Configuration</h3>
       <div class="control-group">
         <label>Seats Per Section</label>
@@ -457,11 +498,6 @@
         const backgroundColor = bgColor !== null ? bgColor : color;
         context.fillStyle = "#" + new THREE.Color(backgroundColor).getHexString();
         context.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Border
-        context.strokeStyle = "#" + new THREE.Color(color).getHexString();
-        context.lineWidth = 4;
-        context.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
 
         // Text
         context.font = `Bold ${fontSize}px Arial`;
@@ -1661,6 +1697,20 @@
 
       // Setup controls
       function setupControls() {
+        // Toggle controls panel
+        const controlsPanel = document.getElementById("controlsPanel");
+        const toggleButton = document.getElementById("toggleControls");
+
+        toggleButton.addEventListener("click", () => {
+          controlsPanel.classList.toggle("collapsed");
+          const svg = toggleButton.querySelector("svg");
+          if (controlsPanel.classList.contains("collapsed")) {
+            svg.innerHTML = '<path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>';
+          } else {
+            svg.innerHTML = '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>';
+          }
+        });
+
         // Seats slider
         document
           .getElementById("seatsPerSection")
