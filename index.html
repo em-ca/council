@@ -504,6 +504,8 @@
       let mouseButton = 0;
       let previousMouse = { x: 0, y: 0 };
       let touchStartDistance = 0;
+      let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      let performanceMode = isMobile;
 
       // Create text sprite for zone labels
       function createTextSprite(
@@ -562,15 +564,15 @@
       function createZoneMarker(text, color, isSpecial = false, bgColor = null) {
         const group = new THREE.Group();
 
-        // Create pole
-        const poleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 6, 12);
+        // Create pole with lower geometry on mobile
+        const poleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 6, isMobile ? 6 : 12);
         const poleMaterial = new THREE.MeshPhongMaterial({
           color: 0x666666,
           emissive: 0x222222,
         });
         const pole = new THREE.Mesh(poleGeometry, poleMaterial);
         pole.position.y = 3;
-        pole.castShadow = true;
+        pole.castShadow = !isMobile;
         group.add(pole);
 
         // Create text sprite
@@ -583,10 +585,12 @@
         textSprite.position.y = 6;
         group.add(textSprite);
 
-        // Add glow light
-        const light = new THREE.PointLight(color, 0.3, 15);
-        light.position.y = 6;
-        group.add(light);
+        // Skip glow lights on mobile for performance
+        if (!isMobile) {
+          const light = new THREE.PointLight(color, 0.3, 15);
+          light.position.y = 6;
+          group.add(light);
+        }
 
         return group;
       }
@@ -598,17 +602,28 @@
         const aspect = window.innerWidth / window.innerHeight;
         camera = new THREE.PerspectiveCamera(60, aspect, 0.1, 1000);
         updateCameraPosition();
+
+        // Optimize renderer settings for mobile
         renderer = new THREE.WebGLRenderer({
-          antialias: true,
+          antialias: !isMobile, // Disable antialiasing on mobile
           powerPreference: "high-performance",
+          alpha: false,
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        // Lower pixel ratio on mobile for better performance
+        renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
+
+        // Disable shadows on mobile
+        renderer.shadowMap.enabled = !isMobile;
+        if (!isMobile) {
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        }
+
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.0;
         renderer.outputEncoding = THREE.sRGBEncoding;
+
         document
           .getElementById("canvas-container")
           .appendChild(renderer.domElement);
@@ -616,49 +631,72 @@
 
       // Balanced lighting
       function setupLighting() {
-        // Moderate ambient light
-        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
-        scene.add(ambientLight);
-        // Main overhead light
-        const mainLight = new THREE.DirectionalLight(0xffffff, 0.7);
-        mainLight.position.set(0, 35, 0);
-        mainLight.castShadow = true;
-        mainLight.shadow.camera.left = -35;
-        mainLight.shadow.camera.right = 35;
-        mainLight.shadow.camera.top = 35;
-        mainLight.shadow.camera.bottom = -35;
-        mainLight.shadow.mapSize.width = 2048;
-        mainLight.shadow.mapSize.height = 2048;
-        mainLight.shadow.bias = -0.0005;
-        scene.add(mainLight);
-        // Ring lights for atmosphere
-        for (let i = 0; i < 4; i++) {
-          const angle = (i / 4) * Math.PI * 2;
-          const ringLight = new THREE.SpotLight(0xffffff, 0.3);
-          ringLight.position.set(
-            Math.cos(angle) * 20,
-            15,
-            Math.sin(angle) * 20
+        if (isMobile) {
+          // Simplified lighting for mobile - fewer lights, no shadows
+          const ambientLight = new THREE.AmbientLight(0x606060, 0.8);
+          scene.add(ambientLight);
+
+          const mainLight = new THREE.DirectionalLight(0xffffff, 0.6);
+          mainLight.position.set(0, 35, 0);
+          scene.add(mainLight);
+
+          // Only 2 ring lights for mobile
+          for (let i = 0; i < 2; i++) {
+            const angle = (i / 2) * Math.PI * 2;
+            const ringLight = new THREE.PointLight(0xffffff, 0.3, 60);
+            ringLight.position.set(
+              Math.cos(angle) * 20,
+              15,
+              Math.sin(angle) * 20
+            );
+            scene.add(ringLight);
+          }
+        } else {
+          // Full lighting for desktop
+          const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+          scene.add(ambientLight);
+
+          const mainLight = new THREE.DirectionalLight(0xffffff, 0.7);
+          mainLight.position.set(0, 35, 0);
+          mainLight.castShadow = true;
+          mainLight.shadow.camera.left = -35;
+          mainLight.shadow.camera.right = 35;
+          mainLight.shadow.camera.top = 35;
+          mainLight.shadow.camera.bottom = -35;
+          mainLight.shadow.mapSize.width = 2048;
+          mainLight.shadow.mapSize.height = 2048;
+          mainLight.shadow.bias = -0.0005;
+          scene.add(mainLight);
+
+          for (let i = 0; i < 4; i++) {
+            const angle = (i / 4) * Math.PI * 2;
+            const ringLight = new THREE.SpotLight(0xffffff, 0.3);
+            ringLight.position.set(
+              Math.cos(angle) * 20,
+              15,
+              Math.sin(angle) * 20
+            );
+            ringLight.target.position.set(0, 0, 0);
+            ringLight.angle = Math.PI / 6;
+            ringLight.penumbra = 0.3;
+            ringLight.decay = 2;
+            ringLight.distance = 60;
+            scene.add(ringLight);
+            scene.add(ringLight.target);
+          }
+
+          const blueAccent = new THREE.PointLight(0x3498db, 0.2, 30);
+          blueAccent.position.set(-20, 8, -20);
+          scene.add(blueAccent);
+
+          const greenAccent = new THREE.PointLight(
+            CONFIG.materials.accent,
+            0.2,
+            30
           );
-          ringLight.target.position.set(0, 0, 0);
-          ringLight.angle = Math.PI / 6;
-          ringLight.penumbra = 0.3;
-          ringLight.decay = 2;
-          ringLight.distance = 60;
-          scene.add(ringLight);
-          scene.add(ringLight.target);
+          greenAccent.position.set(20, 8, 20);
+          scene.add(greenAccent);
         }
-        // Subtle accent lights
-        const blueAccent = new THREE.PointLight(0x3498db, 0.2, 30);
-        blueAccent.position.set(-20, 8, -20);
-        scene.add(blueAccent);
-        const greenAccent = new THREE.PointLight(
-          CONFIG.materials.accent,
-          0.2,
-          30
-        );
-        greenAccent.position.set(20, 8, 20);
-        scene.add(greenAccent);
       }
 
       // Create room
@@ -708,7 +746,7 @@
         });
         const torso = new THREE.Mesh(torsoGeometry, torsoMaterial);
         torso.position.y = 0.9;
-        torso.castShadow = true;
+        torso.castShadow = !isMobile;
         personGroup.add(torso);
         // Shoulders
         const shoulderGeometry = new THREE.BoxGeometry(0.6, 0.15, 0.3);
@@ -720,7 +758,7 @@
         const headMaterial = new THREE.MeshPhongMaterial({ color: skinColor });
         const head = new THREE.Mesh(headGeometry, headMaterial);
         head.position.y = 1.4;
-        head.castShadow = true;
+        head.castShadow = !isMobile;
         personGroup.add(head);
         // Hair
         const hairGeometry = new THREE.SphereGeometry(0.16, 10, 10);
@@ -806,8 +844,8 @@
         const seatGeometry = new THREE.BoxGeometry(0.9, 0.12, 0.9);
         const seat = new THREE.Mesh(seatGeometry, leatherMaterial);
         seat.position.y = 0.45;
-        seat.castShadow = true;
-        seat.receiveShadow = true;
+        seat.castShadow = !isMobile;
+        seat.receiveShadow = !isMobile;
         chairGroup.add(seat);
         // Seat edge
         const seatEdgeGeometry = new THREE.BoxGeometry(0.92, 0.03, 0.92);
@@ -820,7 +858,7 @@
         backrest.position.y = 1.0;
         backrest.position.z = -0.375;
         backrest.rotation.x = -0.1;
-        backrest.castShadow = true;
+        backrest.castShadow = !isMobile;
         chairGroup.add(backrest);
         // Headrest
         const headrestGeometry = new THREE.BoxGeometry(0.7, 0.2, 0.1);
@@ -833,14 +871,14 @@
         const armrestPadGeometry = new THREE.BoxGeometry(0.12, 0.08, 0.5);
         const leftArmrest = new THREE.Mesh(armrestGeometry, chromeMaterial);
         leftArmrest.position.set(-0.45, 0.55, 0);
-        leftArmrest.castShadow = true;
+        leftArmrest.castShadow = !isMobile;
         chairGroup.add(leftArmrest);
         const leftPad = new THREE.Mesh(armrestPadGeometry, leatherMaterial);
         leftPad.position.set(-0.45, 0.7, 0.1);
         chairGroup.add(leftPad);
         const rightArmrest = new THREE.Mesh(armrestGeometry, chromeMaterial);
         rightArmrest.position.set(0.45, 0.55, 0);
-        rightArmrest.castShadow = true;
+        rightArmrest.castShadow = !isMobile;
         chairGroup.add(rightArmrest);
         const rightPad = new THREE.Mesh(armrestPadGeometry, leatherMaterial);
         rightPad.position.set(0.45, 0.7, 0.1);
@@ -854,7 +892,7 @@
         );
         const pedestal = new THREE.Mesh(pedestalGeometry, chromeMaterial);
         pedestal.position.y = 0.225;
-        pedestal.castShadow = true;
+        pedestal.castShadow = !isMobile;
         chairGroup.add(pedestal);
         // Five-star base
         const baseGroup = new THREE.Group();
@@ -868,7 +906,7 @@
           const leg = new THREE.Mesh(legGeometry, chromeMaterial);
           leg.position.set(Math.cos(angle) * 0.3, 0.02, Math.sin(angle) * 0.3);
           leg.rotation.y = angle;
-          leg.castShadow = true;
+          leg.castShadow = !isMobile;
           baseGroup.add(leg);
           // Caster wheels
           const wheelGeometry = new THREE.CylinderGeometry(0.04, 0.04, 0.02, 8);
@@ -903,8 +941,8 @@
         const seatGeometry = new THREE.BoxGeometry(0.65, 0.1, 0.65);
         const seat = new THREE.Mesh(seatGeometry, chairMaterial);
         seat.position.y = 0.45;
-        seat.castShadow = true;
-        seat.receiveShadow = true;
+        seat.castShadow = !isMobile;
+        seat.receiveShadow = !isMobile;
         chairGroup.add(seat);
         // Seat cushion detail
         const cushionGeometry = new THREE.BoxGeometry(0.6, 0.05, 0.6);
@@ -917,7 +955,7 @@
         backrest.position.y = 0.9;
         backrest.position.z = -0.275;
         backrest.rotation.x = -0.05;
-        backrest.castShadow = true;
+        backrest.castShadow = !isMobile;
         chairGroup.add(backrest);
         // Refined frame legs
         const legPositions = [
@@ -935,7 +973,7 @@
           );
           const leg = new THREE.Mesh(legGeometry, frameMaterial);
           leg.position.set(pos.x, 0.225, pos.z);
-          leg.castShadow = true;
+          leg.castShadow = !isMobile;
           chairGroup.add(leg);
           // Foot caps
           const footGeometry = new THREE.SphereGeometry(0.03, 8, 8);
@@ -973,8 +1011,8 @@
         });
         const tableTop = new THREE.Mesh(tableGeometry, tableMaterial);
         tableTop.position.y = CONFIG.centralTable.tableHeight;
-        tableTop.castShadow = true;
-        tableTop.receiveShadow = true;
+        tableTop.castShadow = !isMobile;
+        tableTop.receiveShadow = !isMobile;
         tableGroup.add(tableTop);
         // Chrome edge trim
         const edgeGeometry = new THREE.TorusGeometry(
@@ -1010,7 +1048,7 @@
           const support = new THREE.Mesh(supportGeometry, supportMaterial);
           support.position.x = (i === 0 ? -1 : 1) * 0.8;
           support.position.y = (CONFIG.centralTable.tableHeight - 0.1) / 2;
-          support.castShadow = true;
+          support.castShadow = !isMobile;
           tableGroup.add(support);
         }
         // Connection beam
@@ -1022,7 +1060,7 @@
         const baseGeometry = new THREE.CylinderGeometry(1.8, 1.8, 0.05, 32);
         const base = new THREE.Mesh(baseGeometry, supportMaterial);
         base.position.y = 0.025;
-        base.castShadow = true;
+        base.castShadow = !isMobile;
         tableGroup.add(base);
         // Chairs and people
         for (let i = 0; i < CONFIG.centralTable.seatCount; i++) {
@@ -1082,8 +1120,8 @@
         );
         ring.rotation.x = -Math.PI / 2;
         ring.position.y = CONFIG.secondRing.tableHeight;
-        ring.castShadow = true;
-        ring.receiveShadow = true;
+        ring.castShadow = !isMobile;
+        ring.receiveShadow = !isMobile;
         ringGroup.add(ring);
         // Chrome trim
         const outerTrimGeometry = new THREE.TorusGeometry(
@@ -1136,7 +1174,7 @@
             CONFIG.secondRing.tableHeight / 2,
             Math.sin(angle) * radius
           );
-          pillar.castShadow = true;
+          pillar.castShadow = !isMobile;
           ringGroup.add(pillar);
         }
         // Chairs and people
@@ -1238,8 +1276,8 @@
           const step = new THREE.Mesh(stepGeometry, stairMaterial);
           step.rotation.x = -Math.PI / 2;
           step.position.y = height;
-          step.castShadow = true;
-          step.receiveShadow = true;
+          step.castShadow = !isMobile;
+          step.receiveShadow = !isMobile;
           stairGroup.add(step);
           // Step riser
           if (i > 0) {
@@ -1289,7 +1327,7 @@
               height + 0.45,
               Math.sin(sectionAngle + offset * 0.06) * radius
             );
-            post.castShadow = true;
+            post.castShadow = !isMobile;
             stairGroup.add(post);
             railPosts.push(
               post.position.clone().add(new THREE.Vector3(0, 0.4, 0))
@@ -1409,8 +1447,8 @@
           );
           platform.rotation.x = -Math.PI / 2;
           platform.position.y = elevation - 0.06;
-          platform.receiveShadow = true;
-          platform.castShadow = true;
+          platform.receiveShadow = !isMobile;
+          platform.castShadow = !isMobile;
           sectionGroup.add(platform);
           // Wider desk with wood finish
           const deskShape = new THREE.Shape();
@@ -1441,8 +1479,8 @@
           );
           desk.rotation.x = -Math.PI / 2;
           desk.position.y = elevation + CONFIG.outerSeating.tableHeight;
-          desk.castShadow = true;
-          desk.receiveShadow = true;
+          desk.castShadow = !isMobile;
+          desk.receiveShadow = !isMobile;
           sectionGroup.add(desk);
           // Modesty panel
           const panelHeight = 0.35;
@@ -1979,21 +2017,24 @@
 
       // Animation loop
       let clock = new THREE.Clock();
+      let frameCount = 0;
       function animate() {
         requestAnimationFrame(animate);
         const delta = clock.getDelta();
         updateFreeCamera(delta);
 
-        // ▶ Replace your existing zoneLabelsGroup rotation code with this:
+        // On mobile, update sprites less frequently
         if (zoneLabelsGroup) {
-          zoneLabelsGroup.traverse((obj) => {
-            if (obj.type === "Sprite") {
-              // billboard sprites toward camera
-              obj.quaternion.copy(camera.quaternion);
-            }
-          });
+          if (!isMobile || frameCount % 2 === 0) {
+            zoneLabelsGroup.traverse((obj) => {
+              if (obj.type === "Sprite") {
+                obj.quaternion.copy(camera.quaternion);
+              }
+            });
+          }
         }
 
+        frameCount++;
         renderer.render(scene, camera);
       }
 
