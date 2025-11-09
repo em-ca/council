@@ -30,7 +30,7 @@
         position: relative;
       }
       .controls {
-        position: absolute;
+        position: fixed;
         top: 20px;
         left: 20px;
         z-index: 100;
@@ -40,38 +40,60 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        min-width: 250px;
+        width: 250px;
         max-height: calc(100vh - 40px);
+        overflow-x: hidden;
         overflow-y: auto;
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+      .controls::-webkit-scrollbar {
+        width: 6px;
+      }
+      .controls::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+      }
+      .controls::-webkit-scrollbar-thumb {
+        background: rgba(76, 175, 80, 0.5);
+        border-radius: 3px;
+      }
+      .controls::-webkit-scrollbar-thumb:hover {
+        background: rgba(76, 175, 80, 0.7);
       }
       .controls.collapsed {
-        transform: translateX(-100%);
-      }
-      .controls.collapsed .toggle-controls {
-        transform: translateX(100%);
+        transform: translateX(calc(-100% - 20px));
+        opacity: 0;
+        pointer-events: none;
       }
       .toggle-controls {
-        position: absolute;
-        top: 10px;
-        right: -40px;
+        position: fixed;
+        top: 20px;
+        left: 290px;
         background: rgba(20, 20, 20, 0.95);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-left: none;
-        border-radius: 0 8px 8px 0;
-        padding: 10px 8px;
+        border-radius: 8px;
+        padding: 12px 10px;
         cursor: pointer;
-        transition: background 0.2s ease;
+        transition: all 0.3s ease;
         z-index: 101;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      }
+      .controls.collapsed + .toggle-controls {
+        left: 20px;
       }
       .toggle-controls:hover {
         background: rgba(40, 40, 40, 0.95);
+        transform: scale(1.05);
       }
       .toggle-controls svg {
         display: block;
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
         fill: #4caf50;
+        transition: transform 0.3s ease;
+      }
+      .controls.collapsed + .toggle-controls svg {
+        transform: rotate(180deg);
       }
       .controls h3 {
         margin: 0 0 15px 0;
@@ -259,15 +281,25 @@
         .controls {
           top: 10px;
           left: 10px;
+          width: calc(100vw - 80px);
+          max-width: 300px;
           padding: 15px;
-          min-width: 220px;
         }
         .controls.collapsed {
-          transform: translateX(calc(-100% - 10px));
+          transform: translateX(calc(-100% - 20px));
         }
         .toggle-controls {
-          right: -35px;
-          padding: 8px 6px;
+          top: 10px;
+          left: calc(100vw - 70px);
+          max-width: 300px;
+          padding: 10px 8px;
+        }
+        .controls.collapsed + .toggle-controls {
+          left: 10px;
+        }
+        .toggle-controls svg {
+          width: 20px;
+          height: 20px;
         }
         .stats {
           display: none;
@@ -284,11 +316,6 @@
   <body>
     <div id="canvas-container"></div>
     <div class="controls" id="controlsPanel">
-      <div class="toggle-controls" id="toggleControls">
-        <svg viewBox="0 0 24 24">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-        </svg>
-      </div>
       <h3>Configuration</h3>
       <div class="control-group">
         <label>Seats Per Section</label>
@@ -337,6 +364,11 @@
           </button>
         </div>
       </div>
+    </div>
+    <div class="toggle-controls" id="toggleControls">
+      <svg viewBox="0 0 24 24">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
     </div>
     <div class="stats">
       <h4>Room Statistics</h4>
@@ -1701,14 +1733,9 @@
         const controlsPanel = document.getElementById("controlsPanel");
         const toggleButton = document.getElementById("toggleControls");
 
-        toggleButton.addEventListener("click", () => {
+        toggleButton.addEventListener("click", (e) => {
+          e.stopPropagation();
           controlsPanel.classList.toggle("collapsed");
-          const svg = toggleButton.querySelector("svg");
-          if (controlsPanel.classList.contains("collapsed")) {
-            svg.innerHTML = '<path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>';
-          } else {
-            svg.innerHTML = '<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>';
-          }
         });
 
         // Seats slider
