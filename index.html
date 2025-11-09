@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no"
     />
-    <title>Professional Conference Room - Zone Layout</title>
+    <title>EMCA - Council</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
       * {
@@ -367,7 +367,7 @@
     </div>
     <div class="toggle-controls" id="toggleControls">
       <svg viewBox="0 0 24 24">
-        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
       </svg>
     </div>
     <div class="stats">
@@ -530,7 +530,8 @@
 
         // Background - use seat color if provided, otherwise use border color
         const backgroundColor = bgColor !== null ? bgColor : color;
-        context.fillStyle = "#" + new THREE.Color(backgroundColor).getHexString();
+        context.fillStyle =
+          "#" + new THREE.Color(backgroundColor).getHexString();
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         // Text
@@ -561,11 +562,21 @@
       }
 
       // Create 3D text for zone markers
-      function createZoneMarker(text, color, isSpecial = false, bgColor = null) {
+      function createZoneMarker(
+        text,
+        color,
+        isSpecial = false,
+        bgColor = null
+      ) {
         const group = new THREE.Group();
 
         // Create pole with lower geometry on mobile
-        const poleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 6, isMobile ? 6 : 12);
+        const poleGeometry = new THREE.CylinderGeometry(
+          0.1,
+          0.1,
+          6,
+          isMobile ? 6 : 12
+        );
         const poleMaterial = new THREE.MeshPhongMaterial({
           color: 0x666666,
           emissive: 0x222222,
@@ -578,9 +589,23 @@
         // Create text sprite
         let textSprite;
         if (isSpecial) {
-          textSprite = createTextSprite("LEADS", color, 32, "ZONE ", false, bgColor);
+          textSprite = createTextSprite(
+            "LEADS",
+            color,
+            32,
+            "ZONE ",
+            false,
+            bgColor
+          );
         } else {
-          textSprite = createTextSprite(text, color, 48, "ZONE ", false, bgColor);
+          textSprite = createTextSprite(
+            text,
+            color,
+            48,
+            "ZONE ",
+            false,
+            bgColor
+          );
         }
         textSprite.position.y = 6;
         group.add(textSprite);
@@ -612,7 +637,9 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         // Lower pixel ratio on mobile for better performance
-        renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
+        renderer.setPixelRatio(
+          isMobile ? 1 : Math.min(window.devicePixelRatio, 2)
+        );
 
         // Disable shadows on mobile
         renderer.shadowMap.enabled = !isMobile;
@@ -1554,9 +1581,10 @@
           const labelDistance = 20;
 
           // Create zone marker with seat color as background
-          const seatColor = i % 2 === 0
-            ? CONFIG.outerSeating.seatColor
-            : CONFIG.outerSeating.seatColorAlt;
+          const seatColor =
+            i % 2 === 0
+              ? CONFIG.outerSeating.seatColor
+              : CONFIG.outerSeating.seatColorAlt;
 
           const marker = createZoneMarker(
             CONFIG.zones.labels[i],
