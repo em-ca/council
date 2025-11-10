@@ -455,7 +455,7 @@
           // ▶ NEW:
           committee: {
             rows: 2, // first 2 rows (3 then 4 seats)
-            seatColor: 0x1b5e20, // distinct color for committee rows
+            seatColor: 0x061b0b, // distinct color for committee rows
           },
         },
         materials: {
@@ -514,50 +514,81 @@
         fontSize = 48,
         prefix = "ZONE ",
         isBoard = false,
-        bgColor = null
+        bgColor = null,
+        opts = {} // ← NEW options
       ) {
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
+        const {
+          minW = isBoard ? 400 : 150, // allow narrower boards
+          paddingX = isBoard ? 80 : 40,
+          paddingY = isBoard ? 28 : 20,
+          lineHeightMul = 1.25,
+          dpr = Math.min(window.devicePixelRatio || 1, 2), // crisp text
+        } = opts;
 
-        // Make canvas wider for board members sign
-        if (isBoard) {
-          canvas.width = 512;
-          canvas.height = 128;
-        } else {
-          canvas.width = 256;
-          canvas.height = 128;
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const font = `Bold ${fontSize}px Arial`;
+        ctx.font = font;
+
+        const label = (prefix || "") + (text || "");
+        const lines = label.split("\n");
+        const lineHeight = Math.ceil(fontSize * lineHeightMul);
+
+        let maxLineW = 0;
+        for (const ln of lines) {
+          maxLineW = Math.max(maxLineW, Math.ceil(ctx.measureText(ln).width));
         }
 
-        // Background - use seat color if provided, otherwise use border color
-        const backgroundColor = bgColor !== null ? bgColor : color;
-        context.fillStyle =
-          "#" + new THREE.Color(backgroundColor).getHexString();
-        context.fillRect(0, 0, canvas.width, canvas.height);
+        const desiredW = Math.max(minW, maxLineW + paddingX * 2);
+        const desiredH = Math.max(
+          128,
+          lines.length * lineHeight + paddingY * 2
+        );
 
-        // Text
-        context.font = `Bold ${fontSize}px Arial`;
-        context.fillStyle = "#ffffff";
-        context.textAlign = "center";
-        context.textBaseline = "middle";
-        context.fillText(prefix + text, canvas.width / 2, canvas.height / 2);
+        // HiDPI canvas
+        canvas.width = Math.ceil(desiredW * dpr);
+        canvas.height = Math.ceil(desiredH * dpr);
+        ctx.scale(dpr, dpr);
+
+        // Reapply font after scaling
+        ctx.font = font;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const backgroundColor = bgColor !== null ? bgColor : color;
+        ctx.fillStyle = "#" + new THREE.Color(backgroundColor).getHexString();
+        ctx.fillRect(0, 0, desiredW, desiredH);
+
+        // inner band
+        ctx.fillStyle = "rgba(255,255,255,0.06)";
+        ctx.fillRect(8, 8, desiredW - 16, desiredH - 16);
+
+        // text
+        ctx.fillStyle = "#ffffff";
+        const startY = desiredH / 2 - ((lines.length - 1) * lineHeight) / 2;
+        lines.forEach((ln, i) => {
+          ctx.fillText(ln, desiredW / 2, startY + i * lineHeight);
+        });
 
         const texture = new THREE.Texture(canvas);
         texture.needsUpdate = true;
+        texture.generateMipmaps = false; // prevent blur
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.anisotropy = 1;
 
-        const spriteMaterial = new THREE.SpriteMaterial({
-          map: texture,
-          transparent: true,
-          opacity: 0.9,
-        });
-        const sprite = new THREE.Sprite(spriteMaterial);
-        // Make board members sign much larger and wider
-        if (isBoard) {
-          sprite.scale.set(12, 3, 1);
-        } else {
-          const scale = fontSize === 48 ? 8 : 6;
-          sprite.scale.set(scale, scale / 2, 1);
-        }
+        const sprite = new THREE.Sprite(
+          new THREE.SpriteMaterial({
+            map: texture,
+            transparent: true,
+            opacity: 0.95,
+          })
+        );
 
+        const worldHeight = isBoard ? 3 : fontSize === 48 ? 4 : 3;
+        const aspect = desiredW / desiredH;
+        sprite.scale.set(worldHeight * aspect, worldHeight, 1);
         return sprite;
       }
 
@@ -854,100 +885,155 @@
       }
 
       // Create detailed executive chair
-      function createExecutiveChair(color = CONFIG.centralTable.seatColor) {
+      function createExecutiveChair(
+        color = CONFIG.centralTable.seatColor,
+        opts = {}
+      ) {
+        const {
+          scale = 1.0, // let outer rows use 0.82–0.88 for spacing
+          backHeight = 1.1, // 0.95–1.1 to fine-tune back height
+          headrest = true, // turn off for very tight rows if needed
+        } = opts;
+
         const chairGroup = new THREE.Group();
+        chairGroup.scale.set(scale, scale, scale);
+
         const leatherMaterial = new THREE.MeshPhongMaterial({
-          color: color,
-          shininess: 100,
-          specular: 0x222222,
+          color,
+          shininess: 110,
+          specular: 0x333333,
         });
         const chromeMaterial = new THREE.MeshPhongMaterial({
           color: CONFIG.materials.chrome,
-          shininess: 200,
+          shininess: 220,
           specular: 0xffffff,
           emissive: 0x111111,
         });
-        // Seat cushion
+
+        // Seat cushion (slightly rounded look via small bevel piece)
         const seatGeometry = new THREE.BoxGeometry(0.9, 0.12, 0.9);
         const seat = new THREE.Mesh(seatGeometry, leatherMaterial);
         seat.position.y = 0.45;
         seat.castShadow = !isMobile;
         seat.receiveShadow = !isMobile;
         chairGroup.add(seat);
-        // Seat edge
-        const seatEdgeGeometry = new THREE.BoxGeometry(0.92, 0.03, 0.92);
-        const seatEdge = new THREE.Mesh(seatEdgeGeometry, chromeMaterial);
+
+        // Subtle piping around the seat
+        const seatEdge = new THREE.Mesh(
+          new THREE.BoxGeometry(0.92, 0.03, 0.92),
+          chromeMaterial
+        );
         seatEdge.position.y = 0.39;
         chairGroup.add(seatEdge);
-        // High backrest
-        const backGeometry = new THREE.BoxGeometry(0.9, 1.1, 0.15);
-        const backrest = new THREE.Mesh(backGeometry, leatherMaterial);
-        backrest.position.y = 1.0;
-        backrest.position.z = -0.375;
-        backrest.rotation.x = -0.1;
-        backrest.castShadow = !isMobile;
-        chairGroup.add(backrest);
-        // Headrest
-        const headrestGeometry = new THREE.BoxGeometry(0.7, 0.2, 0.1);
-        const headrest = new THREE.Mesh(headrestGeometry, leatherMaterial);
-        headrest.position.y = 1.45;
-        headrest.position.z = -0.35;
-        chairGroup.add(headrest);
-        // Armrests with padding
-        const armrestGeometry = new THREE.BoxGeometry(0.1, 0.3, 0.8);
-        const armrestPadGeometry = new THREE.BoxGeometry(0.12, 0.08, 0.5);
-        const leftArmrest = new THREE.Mesh(armrestGeometry, chromeMaterial);
-        leftArmrest.position.set(-0.45, 0.55, 0);
-        leftArmrest.castShadow = !isMobile;
-        chairGroup.add(leftArmrest);
-        const leftPad = new THREE.Mesh(armrestPadGeometry, leatherMaterial);
-        leftPad.position.set(-0.45, 0.7, 0.1);
-        chairGroup.add(leftPad);
-        const rightArmrest = new THREE.Mesh(armrestGeometry, chromeMaterial);
-        rightArmrest.position.set(0.45, 0.55, 0);
-        rightArmrest.castShadow = !isMobile;
-        chairGroup.add(rightArmrest);
-        const rightPad = new THREE.Mesh(armrestPadGeometry, leatherMaterial);
-        rightPad.position.set(0.45, 0.7, 0.1);
-        chairGroup.add(rightPad);
-        // Central column
-        const pedestalGeometry = new THREE.CylinderGeometry(
-          0.06,
-          0.08,
-          0.45,
-          16
+
+        // Backrest with gentle lumbar bulge
+        const back = new THREE.Mesh(
+          new THREE.BoxGeometry(0.9, backHeight, 0.15),
+          leatherMaterial
         );
-        const pedestal = new THREE.Mesh(pedestalGeometry, chromeMaterial);
+        back.position.y = 0.45 + backHeight * 0.5; // keep seat at y=0.45 baseline
+        back.position.z = -0.375;
+        back.rotation.x = -0.1;
+        back.castShadow = !isMobile;
+        chairGroup.add(back);
+
+        // Lumbar pad
+        const lumbar = new THREE.Mesh(
+          new THREE.BoxGeometry(0.82, 0.18, 0.07),
+          leatherMaterial
+        );
+        lumbar.position.set(0, back.position.y - backHeight * 0.15, -0.32);
+        chairGroup.add(lumbar);
+
+        // Horizontal stitching (3 slim insets)
+        const stitchMat = new THREE.MeshPhongMaterial({
+          color: new THREE.Color(color).multiplyScalar(0.9),
+          shininess: 20,
+        });
+        [-0.18, 0.05, 0.28].forEach((offY) => {
+          const s = new THREE.Mesh(
+            new THREE.BoxGeometry(0.86, 0.01, 0.071),
+            stitchMat
+          );
+          s.position.set(0, back.position.y + offY, -0.325);
+          chairGroup.add(s);
+        });
+
+        // Headrest (optional)
+        if (headrest) {
+          const head = new THREE.Mesh(
+            new THREE.BoxGeometry(0.7, 0.2, 0.1),
+            leatherMaterial
+          );
+          head.position.y = back.position.y + backHeight * 0.45;
+          head.position.z = -0.35;
+          chairGroup.add(head);
+        }
+
+        // Armrests with pads
+        const arm = new THREE.Mesh(
+          new THREE.BoxGeometry(0.1, 0.3, 0.8),
+          chromeMaterial
+        );
+        const armL = arm.clone();
+        armL.position.set(-0.45, 0.55, 0);
+        const armR = arm.clone();
+        armR.position.set(0.45, 0.55, 0);
+        armL.castShadow = armR.castShadow = !isMobile;
+        chairGroup.add(armL, armR);
+
+        const pad = new THREE.Mesh(
+          new THREE.BoxGeometry(0.12, 0.08, 0.5),
+          leatherMaterial
+        );
+        const padL = pad.clone();
+        padL.position.set(-0.45, 0.7, 0.1);
+        const padR = pad.clone();
+        padR.position.set(0.45, 0.7, 0.1);
+        chairGroup.add(padL, padR);
+
+        // Gas lift + base
+        const pedestal = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.06, 0.08, 0.45, 14),
+          chromeMaterial
+        );
         pedestal.position.y = 0.225;
         pedestal.castShadow = !isMobile;
         chairGroup.add(pedestal);
-        // Five-star base
+
+        // Five-star base with wheels
         const baseGroup = new THREE.Group();
-        const hubGeometry = new THREE.CylinderGeometry(0.15, 0.15, 0.05, 16);
-        const hub = new THREE.Mesh(hubGeometry, chromeMaterial);
+        const hub = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.15, 0.15, 0.05, 16),
+          chromeMaterial
+        );
         hub.position.y = 0.025;
         baseGroup.add(hub);
-        for (let i = 0; i < 5; i++) {
-          const angle = (i / 5) * Math.PI * 2;
-          const legGeometry = new THREE.BoxGeometry(0.08, 0.04, 0.6);
-          const leg = new THREE.Mesh(legGeometry, chromeMaterial);
-          leg.position.set(Math.cos(angle) * 0.3, 0.02, Math.sin(angle) * 0.3);
-          leg.rotation.y = angle;
+
+        const legs = 5;
+        for (let i = 0; i < legs; i++) {
+          const a = (i / legs) * Math.PI * 2;
+          const leg = new THREE.Mesh(
+            new THREE.BoxGeometry(0.08, 0.04, 0.6),
+            chromeMaterial
+          );
+          leg.position.set(Math.cos(a) * 0.3, 0.02, Math.sin(a) * 0.3);
+          leg.rotation.y = a;
           leg.castShadow = !isMobile;
           baseGroup.add(leg);
-          // Caster wheels
-          const wheelGeometry = new THREE.CylinderGeometry(0.04, 0.04, 0.02, 8);
-          const wheel = new THREE.Mesh(wheelGeometry, chromeMaterial);
-          wheel.position.set(
-            Math.cos(angle) * 0.6,
-            0.04,
-            Math.sin(angle) * 0.6
+
+          // Wheel (lower geo on mobile automatically)
+          const wheel = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.04, 0.04, 0.02, isMobile ? 6 : 8),
+            chromeMaterial
           );
+          wheel.position.set(Math.cos(a) * 0.6, 0.04, Math.sin(a) * 0.6);
           wheel.rotation.z = Math.PI / 2;
-          wheel.rotation.y = angle;
+          wheel.rotation.y = a;
           baseGroup.add(wheel);
         }
         chairGroup.add(baseGroup);
+
         return chairGroup;
       }
 
@@ -1477,7 +1563,13 @@
           platform.receiveShadow = !isMobile;
           platform.castShadow = !isMobile;
           sectionGroup.add(platform);
-          // Wider desk with wood finish
+          // Wider desk with row-specific color (green for committee rows)
+          const isCommitteeRow =
+            config.row < CONFIG.outerSeating.committee.rows;
+          const deskColor = isCommitteeRow
+            ? CONFIG.outerSeating.committee.seatColor // match green chairs
+            : CONFIG.materials.darkWood; // normal wood for others
+
           const deskShape = new THREE.Shape();
           const deskInner = radius - CONFIG.outerSeating.tableDepth;
           const deskOuter = radius - 0.05;
@@ -1491,6 +1583,7 @@
             Math.cos(platformStart) * deskOuter,
             Math.sin(platformStart) * deskOuter
           );
+
           const desk = new THREE.Mesh(
             new THREE.ExtrudeGeometry(deskShape, {
               depth: 0.04,
@@ -1499,7 +1592,7 @@
               bevelSize: 0.01,
             }),
             new THREE.MeshPhongMaterial({
-              color: CONFIG.materials.darkWood,
+              color: deskColor,
               shininess: 100,
               specular: 0x222222,
             })
@@ -1509,7 +1602,8 @@
           desk.castShadow = !isMobile;
           desk.receiveShadow = !isMobile;
           sectionGroup.add(desk);
-          // Modesty panel
+
+          // Modesty panel (slightly darker than the desk color on committee rows)
           const panelHeight = 0.35;
           const panelShape = new THREE.Shape();
           panelShape.absarc(
@@ -1528,20 +1622,27 @@
             platformStart,
             true
           );
+
+          const panelColor = new THREE.Color(deskColor).multiplyScalar(
+            isCommitteeRow ? 0.75 : 1.0
+          );
+
           const panel = new THREE.Mesh(
             new THREE.ExtrudeGeometry(panelShape, {
               depth: panelHeight,
               bevelEnabled: false,
             }),
             new THREE.MeshPhongMaterial({
-              color: 0x1a1a1a,
-              shininess: 30,
+              color: panelColor,
+              shininess: 40,
+              specular: 0x111111,
             })
           );
           panel.rotation.x = -Math.PI / 2;
           panel.position.y =
             elevation + CONFIG.outerSeating.tableHeight - panelHeight;
           sectionGroup.add(panel);
+
           // Chairs and people
           for (let seatIndex = 0; seatIndex < config.seats; seatIndex++) {
             const localAngle = -sectionSpan / 2 + seatSpacing * (seatIndex + 1);
@@ -1552,7 +1653,10 @@
                 : sectionIndex % 2 === 0
                 ? CONFIG.outerSeating.seatColor
                 : CONFIG.outerSeating.seatColorAlt;
-            const chair = createStandardChair(chairColor);
+            const chair = createExecutiveChair(chairColor, {
+              scale: 0.85,
+              backHeight: 1.05,
+            });
             const x = Math.cos(globalAngle) * radius;
             const z = Math.sin(globalAngle) * radius;
             chair.position.set(x, elevation, z);
@@ -1604,10 +1708,10 @@
 
         // Add center table label - "Board Members" with central seat color
         const boardLabel = createTextSprite(
-          "MEMBERS",
+          "BOARD MEMBERS\nCOMMITTEES LEADS", // two lines
           0xffd700,
           36,
-          "BOARD ",
+          "", // no prefix
           true,
           CONFIG.centralTable.seatColor
         );
@@ -1618,47 +1722,54 @@
 
         // Add second ring label - "Zone Leads" with second ring seat color
         const zoneLeadsLabel = createTextSprite(
-          "LEADS",
-          0x4caf50,
-          36,
-          "ZONE ",
-          false,
-          CONFIG.secondRing.seatColor
+          "LEADS", // text
+          0x4caf50, // color
+          36, // fontSize
+          "ZONE ", // prefix (renders "ZONE LEADS")
+          false, // isBoard
+          CONFIG.secondRing.seatColor, // bg
+          {
+            minW: 240, // narrower board width
+            paddingX: 18, // tighter side padding
+            paddingY: 14,
+            dpr: 2, // HiDPI for sharp edges
+          }
         );
-        zoneLeadsLabel.position.y = 3.5;
-        zoneLeadsLabel.position.x = 0;
-        zoneLeadsLabel.position.z = -9; // Position it at the edge of second ring
+
+        zoneLeadsLabel.position.set(0, 3.5, -9);
+        // keep it visible over nearby geometry if needed:
+        zoneLeadsLabel.material.depthTest = false;
+        zoneLeadsLabel.renderOrder = 999;
+
         zoneLabelsGroup.add(zoneLeadsLabel);
 
-        // ▶ NEW: Single "Committee Members" label positioned near the first two outer rows
-        // ▶ NEW placement: rotate ~30° so it doesn't overlap "Zone Leads"
         const committeeLabel = createTextSprite(
-          "COMMITTEE MEMBERS",
+          "COMMITTEES MEMBERS",
           0x8e44ad,
           34,
           "",
           true,
-          CONFIG.outerSeating.committee.seatColor
+          CONFIG.outerSeating.committee.seatColor,
+          {
+            minW: 260, // ↓ narrower board
+            paddingX: 24, // ↓ tighter side padding
+            paddingY: 18,
+            dpr: 2, // crisp text on high-DPI
+          }
         );
 
+        // keep your existing placement:
         const committeeBaseRadius =
           CONFIG.outerSeating.startRadius + CONFIG.outerSeating.rowDepth * 0.5;
-
-        // place at +30° (clockwise), a bit higher
-        const angle = Math.PI / 6; // 30°
+        const angle = Math.PI / 6;
         committeeLabel.position.set(
           Math.cos(angle) * committeeBaseRadius,
           3.8,
           Math.sin(angle) * committeeBaseRadius
         );
-
-        // face center
         committeeLabel.rotation.y = -angle;
-
-        // make sure it always draws on top of nearby geometry
         committeeLabel.material.depthTest = false;
         committeeLabel.renderOrder = 999;
-
         zoneLabelsGroup.add(committeeLabel);
 
         scene.add(zoneLabelsGroup);
