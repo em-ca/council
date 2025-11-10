@@ -1,2200 +1,1447 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EMCA - Afghan American Engineers in California</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <title>EMCA - Council</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Google Fonts for better Dari/Farsi support -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        user-select: none;
+      /* Custom styles for Dari/Farsi */
+      .font-dari {
+        font-family: "Vazirmatn", sans-serif;
       }
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          sans-serif;
-        overflow: hidden;
-        background: #0f0f0f;
-        touch-action: none;
+
+      /* Smooth scroll */
+      html {
+        scroll-behavior: smooth;
       }
-      #canvas-container {
-        width: 100vw;
-        height: 100vh;
-        position: relative;
-      }
-      .controls {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 100;
-        background: rgba(20, 20, 20, 0.95);
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        width: 250px;
-        max-height: calc(100vh - 40px);
-        overflow-x: hidden;
-        overflow-y: auto;
-        transition: transform 0.3s ease, opacity 0.3s ease;
-      }
-      .controls::-webkit-scrollbar {
-        width: 6px;
-      }
-      .controls::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 3px;
-      }
-      .controls::-webkit-scrollbar-thumb {
-        background: rgba(76, 175, 80, 0.5);
-        border-radius: 3px;
-      }
-      .controls::-webkit-scrollbar-thumb:hover {
-        background: rgba(76, 175, 80, 0.7);
-      }
-      .controls.collapsed {
-        transform: translateX(calc(-100% - 20px));
-        opacity: 0;
-        pointer-events: none;
-      }
-      .toggle-controls {
-        position: fixed;
-        top: 20px;
-        left: 290px;
-        background: rgba(20, 20, 20, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        padding: 12px 10px;
-        cursor: pointer;
+
+      /* Zone card hover effect */
+      .zone-card {
         transition: all 0.3s ease;
-        z-index: 101;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        border: 3px solid transparent;
       }
-      .controls.collapsed + .toggle-controls {
-        left: 20px;
+
+      .zone-card:hover {
+        transform: translateY(-5px);
+        border-color: #047857;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       }
-      .toggle-controls:hover {
-        background: rgba(40, 40, 40, 0.95);
+
+      /* Committee card style */
+      .committee-card {
+        transition: all 0.3s ease;
+      }
+
+      .committee-card:hover {
         transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
       }
-      .toggle-controls svg {
-        display: block;
-        width: 24px;
-        height: 24px;
-        fill: #4caf50;
-        transition: transform 0.3s ease;
+
+      /* RTL support */
+      [dir="rtl"] {
+        font-family: "Vazirmatn", sans-serif;
       }
-      .controls.collapsed + .toggle-controls svg {
-        transform: rotate(180deg);
+
+      /* Pattern overlay for hero */
+      .pattern-overlay {
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
       }
-      .controls h3 {
-        margin: 0 0 15px 0;
-        color: #fff;
-        font-size: 16px;
-        font-weight: 600;
-      }
-      .control-group {
-        margin-bottom: 15px;
-      }
-      .control-group label {
-        display: block;
-        margin-bottom: 6px;
-        color: #b0b0b0;
-        font-size: 12px;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-      .control-group input[type="range"] {
-        width: 100%;
-        margin-bottom: 4px;
-        background: #333;
-        outline: none;
-        -webkit-appearance: none;
-        height: 6px;
-        border-radius: 3px;
-      }
-      .control-group input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        background: #4caf50;
-        cursor: pointer;
-        border-radius: 50%;
-      }
-      .control-group span {
-        font-size: 12px;
-        color: #4caf50;
-        font-weight: 600;
-      }
-      .checkbox-group {
-        display: flex;
-        align-items: center;
-        margin: 15px 0;
-        padding: 10px;
-        background: rgba(76, 175, 80, 0.1);
-        border-radius: 6px;
-        border: 1px solid rgba(76, 175, 80, 0.3);
-      }
-      .checkbox-group input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        margin-right: 8px;
-        cursor: pointer;
-      }
-      .checkbox-group label {
-        color: #fff;
-        font-size: 13px;
-        cursor: pointer;
-        user-select: none;
-      }
-      button {
-        width: 100%;
-        padding: 10px;
-        margin-top: 5px;
-        background: linear-gradient(135deg, #4caf50, #45a049);
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
-      }
-      button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 25px rgba(76, 175, 80, 0.4);
-      }
-      .camera-mode {
-        margin-top: 15px;
-        padding-top: 15px;
-        border-top: 1px solid #333;
-      }
-      .camera-mode h4 {
-        color: #4caf50;
-        font-size: 12px;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-      }
-      .camera-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-      .camera-buttons button {
-        padding: 8px;
-        font-size: 11px;
-      }
-      .info {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(20, 20, 20, 0.95);
-        padding: 15px;
-        border-radius: 8px;
-        font-size: 12px;
-        color: #b0b0b0;
-        max-width: 280px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      .info strong {
-        color: #4caf50;
-        display: block;
-        margin-bottom: 8px;
-        font-size: 13px;
-      }
-      .stats {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: rgba(20, 20, 20, 0.95);
-        padding: 15px;
-        border-radius: 8px;
-        color: #fff;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 12px;
-        min-width: 180px;
-      }
-      .stats h4 {
-        color: #4caf50;
-        margin-bottom: 10px;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-      .stat-item {
-        margin: 6px 0;
-        display: flex;
-        justify-content: space-between;
-      }
-      .stat-item span:first-child {
-        color: #b0b0b0;
-      }
-      .stat-item span:last-child {
-        color: #fff;
-        font-weight: 600;
-      }
-      .zone-legend {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        background: rgba(20, 20, 20, 0.95);
-        padding: 15px;
-        border-radius: 8px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        max-width: 200px;
-      }
-      .zone-legend h4 {
-        color: #4caf50;
-        margin-bottom: 10px;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-      .zone-list {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4px;
-        font-size: 11px;
-        color: #b0b0b0;
-      }
-      .zone-item {
-        padding: 2px 4px;
-        background: rgba(76, 175, 80, 0.1);
-        border-radius: 3px;
-      }
-      @media (max-width: 768px) {
-        .controls {
-          top: 10px;
-          left: 10px;
-          width: calc(100vw - 80px);
-          max-width: 300px;
-          padding: 15px;
-        }
-        .controls.collapsed {
-          transform: translateX(calc(-100% - 20px));
-        }
-        .toggle-controls {
-          top: 10px;
-          left: calc(100vw - 70px);
-          max-width: 300px;
-          padding: 10px 8px;
-        }
-        .controls.collapsed + .toggle-controls {
-          left: 10px;
-        }
-        .toggle-controls svg {
-          width: 20px;
-          height: 20px;
-        }
-        .stats {
-          display: none;
-        }
-        .info {
-          display: none;
-        }
-        .zone-legend {
-          display: none;
-        }
+
+      /* Large click areas for better accessibility */
+      .large-click {
+        min-height: 48px;
+        min-width: 48px;
       }
     </style>
   </head>
-  <body>
-    <div id="canvas-container"></div>
-    <div class="controls" id="controlsPanel">
-      <h3>Configuration</h3>
-      <div class="control-group">
-        <label>Seats Per Section</label>
-        <input
-          type="range"
-          id="seatsPerSection"
-          min="10"
-          max="100"
-          step="5"
-          value="25"
-        />
-        <span id="seatsValue">25 seats</span>
-      </div>
-      <button id="rebuildSeating">Rebuild Seating</button>
-      <div class="checkbox-group">
-        <input type="checkbox" id="showPeople" />
-        <label for="showPeople">Show Attendees</label>
-      </div>
-      <div class="checkbox-group">
-        <input type="checkbox" id="showZoneLabels" checked />
-        <label for="showZoneLabels">Show Zone Labels</label>
-      </div>
-      <div class="camera-mode">
-        <h4>Camera Mode</h4>
-        <div class="camera-buttons">
+  <body class="bg-gray-50">
+    <!-- Language Toggle Button -->
+    <div class="fixed top-4 right-4 z-50">
+      <button
+        onclick="toggleLanguage()"
+        class="bg-emerald-700 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-emerald-800 transition-colors text-lg font-semibold large-click"
+      >
+        <i class="fas fa-language mr-2"></i>
+        <span id="langToggleText">دری</span>
+      </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-40">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+          <div class="flex items-center space-x-4">
+            <div
+              class="bg-emerald-700 text-white w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold"
+            >
+              امکا
+            </div>
+            <div>
+              <h1
+                class="text-xl font-bold text-gray-800"
+                data-en="Afghan American Engineers"
+                data-dari="انجنیران افغان-امرکایی "
+              >
+                Afghan American Engineers
+              </h1>
+              <p
+                class="text-sm text-gray-600"
+                data-en="California Chapter"
+                data-dari="بخش کالیفورنیا"
+              >
+                California Chapter
+              </p>
+            </div>
+          </div>
+
+          <!-- Simple Navigation Menu -->
+          <div class="hidden md:flex space-x-8">
+            <a
+              href="#home"
+              class="text-gray-700 hover:text-emerald-700 font-medium text-lg large-click flex items-center"
+              data-en="Home"
+              data-dari="خانه"
+              >Home</a
+            >
+            <a
+              href="#zones"
+              class="text-gray-700 hover:text-emerald-700 font-medium text-lg large-click flex items-center"
+              data-en="Zones"
+              data-dari="مناطق"
+              >Zones</a
+            >
+            <a
+              href="#committees"
+              class="text-gray-700 hover:text-emerald-700 font-medium text-lg large-click flex items-center"
+              data-en="Committees"
+              data-dari="کمیته ها"
+              >Committees</a
+            >
+            <a
+              href="#conference"
+              class="text-gray-700 hover:text-emerald-700 font-medium text-lg large-click flex items-center"
+              data-en="Conference Room"
+              data-dari="اتاق کنفرانس"
+              >Conference Room</a
+            >
+            <a
+              href="#contact"
+              class="text-gray-700 hover:text-emerald-700 font-medium text-lg large-click flex items-center"
+              data-en="Contact"
+              data-dari="تماس"
+              >Contact</a
+            >
+          </div>
+
+          <!-- Mobile Menu Button -->
           <button
-            id="orbitMode"
-            style="background: linear-gradient(135deg, #3498db, #2980b9)"
+            onclick="toggleMobileMenu()"
+            class="md:hidden text-gray-700 text-2xl large-click"
           >
-            Orbit
-          </button>
-          <button
-            id="freeMode"
-            style="background: linear-gradient(135deg, #e74c3c, #c0392b)"
-          >
-            Free Fly
-          </button>
-          <button
-            id="resetView"
-            style="
-              background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-              grid-column: span 2;
-            "
-          >
-            Reset View
+            <i class="fas fa-bars"></i>
           </button>
         </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden pb-4">
+          <a
+            href="#home"
+            class="block py-3 text-gray-700 hover:text-emerald-700 font-medium text-lg"
+            data-en="Home"
+            data-dari="خانه"
+            >Home</a
+          >
+          <a
+            href="#zones"
+            class="block py-3 text-gray-700 hover:text-emerald-700 font-medium text-lg"
+            data-en="Zones"
+            data-dari="مناطق"
+            >Zones</a
+          >
+          <a
+            href="#committees"
+            class="block py-3 text-gray-700 hover:text-emerald-700 font-medium text-lg"
+            data-en="Committees"
+            data-dari="کمیته ها"
+            >Committees</a
+          >
+          <a
+            href="#conference"
+            class="block py-3 text-gray-700 hover:text-emerald-700 font-medium text-lg"
+            data-en="Conference Room"
+            data-dari="اتاق کنفرانس"
+            >Conference Room</a
+          >
+          <a
+            href="#contact"
+            class="block py-3 text-gray-700 hover:text-emerald-700 font-medium text-lg"
+            data-en="Contact"
+            data-dari="تماس"
+            >Contact</a
+          >
+        </div>
       </div>
-    </div>
-    <div class="toggle-controls" id="toggleControls">
-      <svg viewBox="0 0 24 24">
-        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-      </svg>
-    </div>
-    <div class="stats">
-      <h4>Room Statistics</h4>
-      <div class="stat-item">
-        <span>Central:</span>
-        <span>7 seats</span>
+    </nav>
+
+    <!-- Hero Section -->
+    <section
+      id="home"
+      class="relative bg-emerald-700 text-white py-20 md:py-32 overflow-hidden"
+    >
+      <div class="pattern-overlay absolute inset-0"></div>
+      <img
+        src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1920&h=600&fit=crop"
+        alt="Engineering team"
+        class="absolute inset-0 w-full h-full object-cover opacity-20"
+      />
+
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2
+            class="text-4xl md:text-6xl font-bold mb-6"
+            data-en="Building Bridges, Creating Future"
+            data-dari="ساختن پل‌ها، ایجاد آینده"
+          >
+            Building Bridges, Creating Future
+          </h2>
+          <p
+            class="text-xl md:text-2xl mb-8 opacity-95"
+            data-en="United Afghan American Engineers in California - Serving our community with excellence and dedication"
+            data-dari="انجینران متحد افغانستان در کالیفورنیا - خدمت به جامعه ما با تعالی و تعهد"
+          >
+            United Afghan American Engineers in California - Serving our
+            community with excellence and dedication
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+            <a
+              href="#zones"
+              class="bg-white text-emerald-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors large-click inline-flex items-center justify-center"
+            >
+              <i class="fas fa-map-marked-alt mr-3"></i>
+              <span data-en="Explore Zones" data-dari="کاوش مناطق"
+                >Explore Zones</span
+              >
+            </a>
+            <a
+              href="#committees"
+              class="bg-emerald-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-emerald-500 transition-colors large-click inline-flex items-center justify-center"
+            >
+              <i class="fas fa-users mr-3"></i>
+              <span data-en="Our Committees" data-dari="کمیته های ما"
+                >Our Committees</span
+              >
+            </a>
+          </div>
+        </div>
       </div>
-      <div class="stat-item">
-        <span>Second Ring:</span>
-        <span>10 seats</span>
+    </section>
+
+    <!-- Welcome Message -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+          <div
+            class="bg-emerald-50 border-4 border-emerald-200 rounded-2xl p-8"
+          >
+            <i class="fas fa-hands-helping text-5xl text-emerald-700 mb-4"></i>
+            <h3
+              class="text-2xl font-bold text-gray-800 mb-4"
+              data-en="Welcome to EMCA Family"
+              data-dari="به خانواده EMCA خوش آمدید"
+            >
+              Welcome to EMCA Family
+            </h3>
+            <p
+              class="text-lg text-gray-700 leading-relaxed"
+              data-en="We are proud Afghan engineers building our future together in California. Join us in our mission to serve, support, and strengthen our community through professional excellence and cultural unity."
+              data-dari="ما مهندسان افغان مفتخر هستیم که آینده خود را در کالیفورنیا با هم می سازیم. به ما در ماموریت ما برای خدمت، حمایت و تقویت جامعه ما از طریق تعالی حرفه ای و وحدت فرهنگی بپیوندید."
+            >
+              We are proud Afghan engineers building our future together in
+              California. Join us in our mission to serve, support, and
+              strengthen our community through professional excellence and
+              cultural unity.
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="stat-item">
-        <span>Outer Zones:</span>
-        <span>10 × 25</span>
+    </section>
+
+    <!-- Zones Section -->
+    <section id="zones" class="py-20 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2
+            class="text-4xl font-bold text-gray-800 mb-4"
+            data-en="Our Regional Zones"
+            data-dari="مناطق منطقه ای ما"
+          >
+            Our Regional Zones
+          </h2>
+          <p
+            class="text-xl text-gray-600"
+            data-en="Select your zone to connect with local members and activities"
+            data-dari="منطقه خود را برای ارتباط با اعضا و فعالیت های محلی انتخاب کنید"
+          >
+            Select your zone to connect with local members and activities
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <!-- Zone Cards -->
+          <a
+            href="/zone-a.html"
+            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+          >
+            <div
+              class="bg-emerald-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-3xl font-bold text-emerald-700">A</span>
+            </div>
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-2"
+              data-en="Zone A"
+              data-dari="منطقه A"
+            >
+              Zone A
+            </h3>
+            <p
+              class="text-gray-600"
+              data-en="San Francisco"
+              data-dari="سان فرانسیسکو"
+            >
+              San Francisco
+            </p>
+            <div class="mt-4 text-emerald-700">
+              <i class="fas fa-arrow-right text-xl"></i>
+            </div>
+          </a>
+
+          <a
+            href="/zone-b.html"
+            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+          >
+            <div
+              class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-3xl font-bold text-blue-700">B</span>
+            </div>
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-2"
+              data-en="Zone B"
+              data-dari="منطقه B"
+            >
+              Zone B
+            </h3>
+            <p class="text-gray-600" data-en="Los Angeles" data-dari="لس آنجلس">
+              Los Angeles
+            </p>
+            <div class="mt-4 text-blue-700">
+              <i class="fas fa-arrow-right text-xl"></i>
+            </div>
+          </a>
+
+          <a
+            href="/zone-c.html"
+            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+          >
+            <div
+              class="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-3xl font-bold text-purple-700">C</span>
+            </div>
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-2"
+              data-en="Zone C"
+              data-dari="منطقه C"
+            >
+              Zone C
+            </h3>
+            <p class="text-gray-600" data-en="San Diego" data-dari="سن دیگو">
+              San Diego
+            </p>
+            <div class="mt-4 text-purple-700">
+              <i class="fas fa-arrow-right text-xl"></i>
+            </div>
+          </a>
+
+          <a
+            href="/zone-d.html"
+            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+          >
+            <div
+              class="bg-orange-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-3xl font-bold text-orange-700">D</span>
+            </div>
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-2"
+              data-en="Zone D"
+              data-dari="منطقه D"
+            >
+              Zone D
+            </h3>
+            <p class="text-gray-600" data-en="Sacramento" data-dari="ساکرامنتو">
+              Sacramento
+            </p>
+            <div class="mt-4 text-orange-700">
+              <i class="fas fa-arrow-right text-xl"></i>
+            </div>
+          </a>
+
+          <a
+            href="/zone-e.html"
+            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+          >
+            <div
+              class="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-3xl font-bold text-red-700">E</span>
+            </div>
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-2"
+              data-en="Zone E"
+              data-dari="منطقه E"
+            >
+              Zone E
+            </h3>
+            <p class="text-gray-600" data-en="San Jose" data-dari="سن خوزه">
+              San Jose
+            </p>
+            <div class="mt-4 text-red-700">
+              <i class="fas fa-arrow-right text-xl"></i>
+            </div>
+          </a>
+
+          <a
+            href="/zone-f.html"
+            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+          >
+            <div
+              class="bg-teal-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-3xl font-bold text-teal-700">F</span>
+            </div>
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-2"
+              data-en="Zone F"
+              data-dari="منطقه F"
+            >
+              Zone F
+            </h3>
+            <p class="text-gray-600" data-en="Fresno" data-dari="فرزنو">
+              Fresno
+            </p>
+            <div class="mt-4 text-teal-700">
+              <i class="fas fa-arrow-right text-xl"></i>
+            </div>
+          </a>
+
+          <a
+            href="/zone-g.html"
+            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+          >
+            <div
+              class="bg-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-3xl font-bold text-indigo-700">G</span>
+            </div>
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-2"
+              data-en="Zone G"
+              data-dari="منطقه G"
+            >
+              Zone G
+            </h3>
+            <p class="text-gray-600" data-en="Oakland" data-dari="اوکلند">
+              Oakland
+            </p>
+            <div class="mt-4 text-indigo-700">
+              <i class="fas fa-arrow-right text-xl"></i>
+            </div>
+          </a>
+
+          <a
+            href="/zone-h.html"
+            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+          >
+            <div
+              class="bg-pink-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-3xl font-bold text-pink-700">H</span>
+            </div>
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-2"
+              data-en="Zone H"
+              data-dari="منطقه H"
+            >
+              Zone H
+            </h3>
+            <p class="text-gray-600" data-en="Riverside" data-dari="ریورساید">
+              Riverside
+            </p>
+            <div class="mt-4 text-pink-700">
+              <i class="fas fa-arrow-right text-xl"></i>
+            </div>
+          </a>
+
+          <a
+            href="/zone-i.html"
+            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+          >
+            <div
+              class="bg-yellow-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-3xl font-bold text-yellow-700">I</span>
+            </div>
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-2"
+              data-en="Zone I"
+              data-dari="منطقه I"
+            >
+              Zone I
+            </h3>
+            <p class="text-gray-600" data-en="Long Beach" data-dari="لانگ بیچ">
+              Long Beach
+            </p>
+            <div class="mt-4 text-yellow-700">
+              <i class="fas fa-arrow-right text-xl"></i>
+            </div>
+          </a>
+
+          <a
+            href="/zone-j.html"
+            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+          >
+            <div
+              class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <span class="text-3xl font-bold text-green-700">J</span>
+            </div>
+            <h3
+              class="text-xl font-semibold text-gray-800 mb-2"
+              data-en="Zone J"
+              data-dari="منطقه J"
+            >
+              Zone J
+            </h3>
+            <p class="text-gray-600" data-en="Anaheim" data-dari="آناهایم">
+              Anaheim
+            </p>
+            <div class="mt-4 text-green-700">
+              <i class="fas fa-arrow-right text-xl"></i>
+            </div>
+          </a>
+        </div>
       </div>
-      <div class="stat-item">
-        <span>Total:</span>
-        <span>267 seats</span>
+    </section>
+
+    <!-- 3D Conference Room Section -->
+    <section
+      id="conference"
+      class="py-20 bg-emerald-800 text-white relative overflow-hidden"
+    >
+      <div class="absolute inset-0 opacity-10">
+        <img
+          src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&h=600&fit=crop"
+          alt="Modern office"
+          class="w-full h-full object-cover"
+        />
       </div>
-    </div>
-    <div class="zone-legend">
-      <h4>Zone Layout</h4>
-      <div class="zone-list">
-        <div class="zone-item">Zone A</div>
-        <div class="zone-item">Zone B</div>
-        <div class="zone-item">Zone C</div>
-        <div class="zone-item">Zone D</div>
-        <div class="zone-item">Zone E</div>
-        <div class="zone-item">Zone F</div>
-        <div class="zone-item">Zone G</div>
-        <div class="zone-item">Zone H</div>
-        <div class="zone-item">Zone I</div>
-        <div class="zone-item">Zone J</div>
+
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center mb-12">
+          <h2
+            class="text-4xl font-bold mb-4"
+            data-en="Virtual Conference Room"
+            data-dari="اتاق کنفرانس مجازی"
+          >
+            Virtual Conference Room
+          </h2>
+          <p
+            class="text-xl opacity-95 mb-8"
+            data-en="Experience our state-of-the-art 3D conference facility"
+            data-dari="تجربه امکانات کنفرانس سه بعدی پیشرفته ما"
+          >
+            Experience our state-of-the-art 3D conference facility
+          </p>
+        </div>
+
+        <div class="max-w-6xl mx-auto">
+          <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <!-- 3D Model Container -->
+            <div class="relative" style="height: 600px">
+              <iframe
+                src="model.html"
+                class="w-full h-full border-0"
+                title="3D Conference Room Model"
+              >
+              </iframe>
+            </div>
+
+            <div class="p-8 bg-gray-50">
+              <div class="grid md:grid-cols-3 gap-6 text-gray-800">
+                <div class="text-center">
+                  <i class="fas fa-users text-4xl text-emerald-700 mb-3"></i>
+                  <h4
+                    class="font-semibold text-lg mb-2"
+                    data-en="Capacity: 500+"
+                    data-dari="ظرفیت: 500+"
+                  >
+                    Capacity: 500+
+                  </h4>
+                  <p
+                    class="text-gray-600"
+                    data-en="Modern seating arrangement"
+                    data-dari="ترتیب صندلی مدرن"
+                  >
+                    Modern seating arrangement
+                  </p>
+                </div>
+                <div class="text-center">
+                  <i class="fas fa-video text-4xl text-emerald-700 mb-3"></i>
+                  <h4
+                    class="font-semibold text-lg mb-2"
+                    data-en="HD Video Conferencing"
+                    data-dari="ویدیو کنفرانس HD"
+                  >
+                    HD Video Conferencing
+                  </h4>
+                  <p
+                    class="text-gray-600"
+                    data-en="Connect globally"
+                    data-dari="اتصال جهانی"
+                  >
+                    Connect globally
+                  </p>
+                </div>
+                <div class="text-center">
+                  <i class="fas fa-wifi text-4xl text-emerald-700 mb-3"></i>
+                  <h4
+                    class="font-semibold text-lg mb-2"
+                    data-en="Smart Technology"
+                    data-dari="فناوری هوشمند"
+                  >
+                    Smart Technology
+                  </h4>
+                  <p
+                    class="text-gray-600"
+                    data-en="Fully equipped facilities"
+                    data-dari="امکانات کاملا مجهز"
+                  >
+                    Fully equipped facilities
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="info">
-      <strong>Controls:</strong>
-      <span style="font-size: 11px">
-        <b>Orbit Mode:</b> Drag to rotate, scroll zoom<br />
-        <b>Free Mode:</b> WASD/Arrows move, Mouse look<br />
-        Q/E: Up/Down | Shift: Fast | Space: Reset<br />
-        Mobile: Touch orbit, pinch zoom
-      </span>
-    </div>
+    </section>
+
+    <!-- Committees Section -->
+    <section id="committees" class="py-20 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2
+            class="text-4xl font-bold text-gray-800 mb-4"
+            data-en="Our Committees"
+            data-dari="کمیته های ما"
+          >
+            Our Committees
+          </h2>
+          <p
+            class="text-xl text-gray-600"
+            data-en="Specialized teams working for community excellence"
+            data-dari="تیم های تخصصی که برای تعالی جامعه کار می کنند"
+          >
+            Specialized teams working for community excellence
+          </p>
+        </div>
+
+        <div
+          class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto"
+        >
+          <!-- Committee Cards -->
+          <div
+            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-emerald-700"
+          >
+            <div class="text-emerald-700 mb-4">
+              <i class="fas fa-briefcase text-5xl"></i>
+            </div>
+            <h3
+              class="text-2xl font-bold text-gray-800 mb-3"
+              data-en="Administration"
+              data-dari="اداره"
+            >
+              Administration
+            </h3>
+            <p
+              class="text-gray-600 mb-4"
+              data-en="Managing operations and organizational structure"
+              data-dari="مدیریت عملیات و ساختار سازمانی"
+            >
+              Managing operations and organizational structure
+            </p>
+            <a
+              href="/committee-admin.html"
+              class="text-emerald-700 font-semibold hover:text-emerald-800 inline-flex items-center"
+            >
+              <span data-en="Learn More" data-dari="بیشتر بدانید"
+                >Learn More</span
+              >
+              <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+
+          <div
+            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-blue-700"
+          >
+            <div class="text-blue-700 mb-4">
+              <i class="fas fa-chart-line text-5xl"></i>
+            </div>
+            <h3
+              class="text-2xl font-bold text-gray-800 mb-3"
+              data-en="Finance"
+              data-dari="امور مالی"
+            >
+              Finance
+            </h3>
+            <p
+              class="text-gray-600 mb-4"
+              data-en="Financial planning and resource management"
+              data-dari="برنامه ریزی مالی و مدیریت منابع"
+            >
+              Financial planning and resource management
+            </p>
+            <a
+              href="/committee-finance.html"
+              class="text-blue-700 font-semibold hover:text-blue-800 inline-flex items-center"
+            >
+              <span data-en="Learn More" data-dari="بیشتر بدانید"
+                >Learn More</span
+              >
+              <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+
+          <div
+            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-purple-700"
+          >
+            <div class="text-purple-700 mb-4">
+              <i class="fas fa-heart text-5xl"></i>
+            </div>
+            <h3
+              class="text-2xl font-bold text-gray-800 mb-3"
+              data-en="Social"
+              data-dari="اجتماعی"
+            >
+              Social
+            </h3>
+            <p
+              class="text-gray-600 mb-4"
+              data-en="Community events and member engagement"
+              data-dari="رویدادهای اجتماعی و مشارکت اعضا"
+            >
+              Community events and member engagement
+            </p>
+            <a
+              href="/committee-social.html"
+              class="text-purple-700 font-semibold hover:text-purple-800 inline-flex items-center"
+            >
+              <span data-en="Learn More" data-dari="بیشتر بدانید"
+                >Learn More</span
+              >
+              <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+
+          <div
+            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-orange-700"
+          >
+            <div class="text-orange-700 mb-4">
+              <i class="fas fa-cogs text-5xl"></i>
+            </div>
+            <h3
+              class="text-2xl font-bold text-gray-800 mb-3"
+              data-en="Engineering"
+              data-dari="مهندسی"
+            >
+              Engineering
+            </h3>
+            <p
+              class="text-gray-600 mb-4"
+              data-en="Technical excellence and professional development"
+              data-dari="تعالی فنی و توسعه حرفه ای"
+            >
+              Technical excellence and professional development
+            </p>
+            <a
+              href="/committee-engineering.html"
+              class="text-orange-700 font-semibold hover:text-orange-800 inline-flex items-center"
+            >
+              <span data-en="Learn More" data-dari="بیشتر بدانید"
+                >Learn More</span
+              >
+              <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+
+          <div
+            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-red-700"
+          >
+            <div class="text-red-700 mb-4">
+              <i class="fas fa-balance-scale text-5xl"></i>
+            </div>
+            <h3
+              class="text-2xl font-bold text-gray-800 mb-3"
+              data-en="Policy"
+              data-dari="سیاست"
+            >
+              Policy
+            </h3>
+            <p
+              class="text-gray-600 mb-4"
+              data-en="Governance and strategic direction"
+              data-dari="حکومتداری و جهت استراتژیک"
+            >
+              Governance and strategic direction
+            </p>
+            <a
+              href="/committee-policy.html"
+              class="text-red-700 font-semibold hover:text-red-800 inline-flex items-center"
+            >
+              <span data-en="Learn More" data-dari="بیشتر بدانید"
+                >Learn More</span
+              >
+              <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+
+          <div
+            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-pink-700"
+          >
+            <div class="text-pink-700 mb-4">
+              <i class="fas fa-female text-5xl"></i>
+            </div>
+            <h3
+              class="text-2xl font-bold text-gray-800 mb-3"
+              data-en="Women"
+              data-dari="زنان"
+            >
+              Women
+            </h3>
+            <p
+              class="text-gray-600 mb-4"
+              data-en="Empowering women engineers and professionals"
+              data-dari="توانمندسازی زنان مهندس و متخصص"
+            >
+              Empowering women engineers and professionals
+            </p>
+            <a
+              href="/committee-women.html"
+              class="text-pink-700 font-semibold hover:text-pink-800 inline-flex items-center"
+            >
+              <span data-en="Learn More" data-dari="بیشتر بدانید"
+                >Learn More</span
+              >
+              <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+
+          <div
+            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-indigo-700"
+          >
+            <div class="text-indigo-700 mb-4">
+              <i class="fas fa-graduation-cap text-5xl"></i>
+            </div>
+            <h3
+              class="text-2xl font-bold text-gray-800 mb-3"
+              data-en="Education"
+              data-dari="آموزش"
+            >
+              Education
+            </h3>
+            <p
+              class="text-gray-600 mb-4"
+              data-en="Scholarships and educational programs"
+              data-dari="بورسیه ها و برنامه های آموزشی"
+            >
+              Scholarships and educational programs
+            </p>
+            <a
+              href="/committee-education.html"
+              class="text-indigo-700 font-semibold hover:text-indigo-800 inline-flex items-center"
+            >
+              <span data-en="Learn More" data-dari="بیشتر بدانید"
+                >Learn More</span
+              >
+              <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="py-20 bg-emerald-700 text-white">
+      <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div class="text-5xl font-bold mb-2">500+</div>
+            <p
+              class="text-xl opacity-90"
+              data-en="Active Members"
+              data-dari="اعضای فعال"
+            >
+              Active Members
+            </p>
+          </div>
+          <div>
+            <div class="text-5xl font-bold mb-2">10</div>
+            <p
+              class="text-xl opacity-90"
+              data-en="Regional Zones"
+              data-dari="مناطق منطقه ای"
+            >
+              Regional Zones
+            </p>
+          </div>
+          <div>
+            <div class="text-5xl font-bold mb-2">7</div>
+            <p
+              class="text-xl opacity-90"
+              data-en="Committees"
+              data-dari="کمیته ها"
+            >
+              Committees
+            </p>
+          </div>
+          <div>
+            <div class="text-5xl font-bold mb-2">25+</div>
+            <p
+              class="text-xl opacity-90"
+              data-en="Years of Service"
+              data-dari="سال خدمت"
+            >
+              Years of Service
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Events Section -->
+    <section class="py-20 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+          <h2
+            class="text-4xl font-bold text-gray-800 mb-4"
+            data-en="Upcoming Events"
+            data-dari="رویدادهای آینده"
+          >
+            Upcoming Events
+          </h2>
+          <p
+            class="text-xl text-gray-600"
+            data-en="Join us in our community gatherings"
+            data-dari="به ما در گردهمایی های اجتماعی بپیوندید"
+          >
+            Join us in our community gatherings
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=400&h=250&fit=crop"
+              alt="Annual Conference"
+              class="w-full h-48 object-cover"
+            />
+            <div class="p-6">
+              <div class="text-emerald-700 text-sm font-semibold mb-2">
+                <i class="fas fa-calendar-alt mr-2"></i>
+                <span data-en="March 15, 2025" data-dari="15 مارچ 2025"
+                  >March 15, 2025</span
+                >
+              </div>
+              <h3
+                class="text-xl font-bold text-gray-800 mb-2"
+                data-en="Annual Conference"
+                data-dari="کنفرانس سالانه"
+              >
+                Annual Conference
+              </h3>
+              <p
+                class="text-gray-600 mb-4"
+                data-en="Join us for our biggest event of the year"
+                data-dari="به ما در بزرگترین رویداد سال بپیوندید"
+              >
+                Join us for our biggest event of the year
+              </p>
+              <a
+                href="#"
+                class="text-emerald-700 font-semibold hover:text-emerald-800"
+              >
+                <span data-en="Register Now" data-dari="اکنون ثبت نام کنید"
+                  >Register Now</span
+                >
+                <i class="fas fa-arrow-right ml-2"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=400&h=250&fit=crop"
+              alt="Professional Workshop"
+              class="w-full h-48 object-cover"
+            />
+            <div class="p-6">
+              <div class="text-emerald-700 text-sm font-semibold mb-2">
+                <i class="fas fa-calendar-alt mr-2"></i>
+                <span data-en="February 20, 2025" data-dari="20 فبروری 2025"
+                  >February 20, 2025</span
+                >
+              </div>
+              <h3
+                class="text-xl font-bold text-gray-800 mb-2"
+                data-en="Professional Workshop"
+                data-dari="کارگاه حرفه ای"
+              >
+                Professional Workshop
+              </h3>
+              <p
+                class="text-gray-600 mb-4"
+                data-en="Enhance your engineering skills"
+                data-dari="مهارت های مهندسی خود را تقویت کنید"
+              >
+                Enhance your engineering skills
+              </p>
+              <a
+                href="#"
+                class="text-emerald-700 font-semibold hover:text-emerald-800"
+              >
+                <span data-en="Learn More" data-dari="بیشتر بدانید"
+                  >Learn More</span
+                >
+                <i class="fas fa-arrow-right ml-2"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=250&fit=crop"
+              alt="Community Gathering"
+              class="w-full h-48 object-cover"
+            />
+            <div class="p-6">
+              <div class="text-emerald-700 text-sm font-semibold mb-2">
+                <i class="fas fa-calendar-alt mr-2"></i>
+                <span data-en="January 30, 2025" data-dari="30 جنوری 2025"
+                  >January 30, 2025</span
+                >
+              </div>
+              <h3
+                class="text-xl font-bold text-gray-800 mb-2"
+                data-en="Community Gathering"
+                data-dari="گردهمایی اجتماعی"
+              >
+                Community Gathering
+              </h3>
+              <p
+                class="text-gray-600 mb-4"
+                data-en="Connect with fellow members"
+                data-dari="با اعضای دیگر ارتباط برقرار کنید"
+              >
+                Connect with fellow members
+              </p>
+              <a
+                href="#"
+                class="text-emerald-700 font-semibold hover:text-emerald-800"
+              >
+                <span data-en="RSVP Now" data-dari="اکنون پاسخ دهید"
+                  >RSVP Now</span
+                >
+                <i class="fas fa-arrow-right ml-2"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+          <div class="text-center mb-12">
+            <h2
+              class="text-4xl font-bold text-gray-800 mb-4"
+              data-en="Get In Touch"
+              data-dari="در تماس باشید"
+            >
+              Get In Touch
+            </h2>
+            <p
+              class="text-xl text-gray-600"
+              data-en="We're here to help and answer any questions"
+              data-dari="ما اینجا هستیم تا کمک کنیم و به سوالات پاسخ دهیم"
+            >
+              We're here to help and answer any questions
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-8 mb-12">
+            <div class="text-center">
+              <div
+                class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <i class="fas fa-map-marker-alt text-2xl text-emerald-700"></i>
+              </div>
+              <h3
+                class="font-semibold text-lg mb-2"
+                data-en="Address"
+                data-dari="آدرس"
+              >
+                Address
+              </h3>
+              <p class="text-gray-600">
+                123 Engineering Way<br />Sacramento, CA 95814
+              </p>
+            </div>
+
+            <div class="text-center">
+              <div
+                class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <i class="fas fa-phone text-2xl text-emerald-700"></i>
+              </div>
+              <h3
+                class="font-semibold text-lg mb-2"
+                data-en="Phone"
+                data-dari="تلفن"
+              >
+                Phone
+              </h3>
+              <p class="text-gray-600">(916) 555-0123</p>
+            </div>
+
+            <div class="text-center">
+              <div
+                class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <i class="fas fa-envelope text-2xl text-emerald-700"></i>
+              </div>
+              <h3
+                class="font-semibold text-lg mb-2"
+                data-en="Email"
+                data-dari="ایمیل"
+              >
+                Email
+              </h3>
+              <p class="text-gray-600">info@emca-ca.org</p>
+            </div>
+          </div>
+
+          <!-- Simple Contact Form -->
+          <div class="bg-gray-50 rounded-2xl p-8">
+            <form class="space-y-6">
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    class="block text-gray-700 font-semibold mb-2"
+                    data-en="Your Name"
+                    data-dari="نام شما"
+                    >Your Name</label
+                  >
+                  <input
+                    type="text"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:outline-none text-lg"
+                    placeholder="Enter your name"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-gray-700 font-semibold mb-2"
+                    data-en="Your Email"
+                    data-dari="ایمیل شما"
+                    >Your Email</label
+                  >
+                  <input
+                    type="email"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:outline-none text-lg"
+                    placeholder="Enter your email"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  class="block text-gray-700 font-semibold mb-2"
+                  data-en="Message"
+                  data-dari="پیام"
+                  >Message</label
+                >
+                <textarea
+                  class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:outline-none text-lg"
+                  rows="5"
+                  placeholder="Type your message here..."
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                class="bg-emerald-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-emerald-800 transition-colors w-full md:w-auto"
+              >
+                <i class="fas fa-paper-plane mr-2"></i>
+                <span data-en="Send Message" data-dari="ارسال پیام"
+                  >Send Message</span
+                >
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-4 gap-8 mb-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4">EMCA</h3>
+            <p
+              class="text-gray-400"
+              data-en="Afghan American Engineers in California - Building bridges between tradition and innovation"
+              data-dari="انجینران افغانستان در کالیفورنیا - ساختن پل بین سنت و نوآوری"
+            >
+              Afghan American Engineers in California - Building bridges between
+              tradition and innovation
+            </p>
+          </div>
+
+          <div>
+            <h4
+              class="text-lg font-semibold mb-4"
+              data-en="Quick Links"
+              data-dari="لینک های سریع"
+            >
+              Quick Links
+            </h4>
+            <ul class="space-y-2 text-gray-400">
+              <li>
+                <a
+                  href="#zones"
+                  class="hover:text-white transition-colors"
+                  data-en="Zones"
+                  data-dari="مناطق"
+                  >Zones</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#committees"
+                  class="hover:text-white transition-colors"
+                  data-en="Committees"
+                  data-dari="کمیته ها"
+                  >Committees</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#conference"
+                  class="hover:text-white transition-colors"
+                  data-en="Conference Room"
+                  data-dari="اتاق کنفرانس"
+                  >Conference Room</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#contact"
+                  class="hover:text-white transition-colors"
+                  data-en="Contact"
+                  data-dari="تماس"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4
+              class="text-lg font-semibold mb-4"
+              data-en="Resources"
+              data-dari="منابع"
+            >
+              Resources
+            </h4>
+            <ul class="space-y-2 text-gray-400">
+              <li>
+                <a
+                  href="#"
+                  class="hover:text-white transition-colors"
+                  data-en="Member Portal"
+                  data-dari="پورتال اعضا"
+                  >Member Portal</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:text-white transition-colors"
+                  data-en="Documents"
+                  data-dari="اسناد"
+                  >Documents</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:text-white transition-colors"
+                  data-en="Newsletter"
+                  data-dari="خبرنامه"
+                  >Newsletter</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="hover:text-white transition-colors"
+                  data-en="FAQ"
+                  data-dari="سوالات متداول"
+                  >FAQ</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4
+              class="text-lg font-semibold mb-4"
+              data-en="Connect With Us"
+              data-dari="با ما در ارتباط باشید"
+            >
+              Connect With Us
+            </h4>
+            <div class="flex space-x-4">
+              <a
+                href="#"
+                class="bg-gray-800 w-12 h-12 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors"
+              >
+                <i class="fab fa-facebook-f text-xl"></i>
+              </a>
+              <a
+                href="#"
+                class="bg-gray-800 w-12 h-12 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors"
+              >
+                <i class="fab fa-twitter text-xl"></i>
+              </a>
+              <a
+                href="#"
+                class="bg-gray-800 w-12 h-12 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors"
+              >
+                <i class="fab fa-linkedin-in text-xl"></i>
+              </a>
+              <a
+                href="#"
+                class="bg-gray-800 w-12 h-12 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors"
+              >
+                <i class="fab fa-instagram text-xl"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+          <p>
+            &copy; 2025 EMCA - Afghan American Engineers in California.
+            <span
+              data-en="All rights reserved."
+              data-dari="تمام حقوق محفوظ است."
+              >All rights reserved.</span
+            >
+          </p>
+        </div>
+      </div>
+    </footer>
+
     <script>
-      // Configuration
-      const CONFIG = {
-        room: {
-          width: 100,
-          depth: 100,
-          height: 20,
-        },
-        centralTable: {
-          radius: 2.5,
-          height: 0.1,
-          tableHeight: 0.75,
-          seatCount: 7,
-          seatRadius: 3.8,
-          color: 0x1a1a1a,
-          glassColor: 0x2e1a0f,
-          seatColor: 0x2c1810,
-        },
-        secondRing: {
-          innerRadius: 6,
-          outerRadius: 7.8,
-          height: 0.04,
-          elevation: 0,
-          tableHeight: 0.74,
-          seatCount: 10,
-          seatRadius: 8.8,
-          tableColor: 0x2e1a0f,
-          seatColor: 0x1a2332,
-        },
-        outerSeating: {
-          sections: 10,
-          seatsPerSection: 25,
-          startRadius: 11,
-          rowDepth: 2.4,
-          rowHeight: 0.35,
-          tableHeight: 0.73,
-          tableDepth: 0.5,
-          seatColor: 0x2c3e50,
-          seatColorAlt: 0x34495e,
-          // ▶ NEW:
-          committee: {
-            rows: 2, // first 2 rows (3 then 4 seats)
-            seatColor: 0x061b0b, // distinct color for committee rows
-          },
-        },
-        materials: {
-          floor: 0x2c2c2c,
-          accent: 0x4caf50,
-          metal: 0xc0c0c0,
-          chrome: 0xe0e0e0,
-          wood: 0x3e2723,
-          darkWood: 0x2e1a0f,
-          stairs: 0x4a4a4a,
-          stairRail: 0xb0b0b0,
-        },
-        person: {
-          colors: {
-            skin: [0xf5deb3, 0xd2b48c, 0xa0522d, 0x8b7355],
-            hair: [0x2c1810, 0x4a3c28, 0x1a1a1a, 0x8b7355, 0xd2691e],
-            shirt: [0x2e5090, 0x8b1538, 0x228b22, 0x4b4b4b, 0x483d8b, 0x708090],
-            pants: [0x1a1a1a, 0x2f4f4f, 0x191970, 0x4b3621],
-          },
-        },
-        zones: {
-          labels: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-          colors: [
-            0x4caf50, 0x2196f3, 0xff9800, 0x9c27b0, 0xf44336, 0x00bcd4,
-            0xffeb3b, 0x795548, 0x607d8b, 0xe91e63,
-          ],
-        },
-      };
+      // Language toggle functionality
+      let currentLang = "en";
 
-      // Global variables
-      let scene, camera, renderer;
-      let cameraMode = "orbit";
-      let cameraDistance = 50;
-      let cameraTarget = new THREE.Vector3(0, 2, 0);
-      let cameraRotation = { theta: Math.PI / 4, phi: Math.PI / 3.5 };
-      let velocity = new THREE.Vector3();
-      let moveSpeed = 0.5;
-      let keys = {};
-      let outerSeatingGroup = null;
-      let stairsGroup = null;
-      let peopleGroups = [];
-      let zoneLabelsGroup = null;
-      let showPeople = false;
-      let showZoneLabels = true;
-      let isDragging = false;
-      let mouseButton = 0;
-      let previousMouse = { x: 0, y: 0 };
-      let touchStartDistance = 0;
-      let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      let performanceMode = isMobile;
+      function toggleLanguage() {
+        currentLang = currentLang === "en" ? "dari" : "en";
+        document.getElementById("langToggleText").textContent =
+          currentLang === "en" ? "دری" : "English";
 
-      // Create text sprite for zone labels
-      function createTextSprite(
-        text,
-        color = 0xffffff,
-        fontSize = 48,
-        prefix = "ZONE ",
-        isBoard = false,
-        bgColor = null,
-        opts = {} // ← NEW options
-      ) {
-        const {
-          minW = isBoard ? 400 : 150, // allow narrower boards
-          paddingX = isBoard ? 80 : 40,
-          paddingY = isBoard ? 28 : 20,
-          lineHeightMul = 1.25,
-          dpr = Math.min(window.devicePixelRatio || 1, 2), // crisp text
-        } = opts;
+        // Update text direction
+        document.documentElement.dir = currentLang === "dari" ? "rtl" : "ltr";
+        document.documentElement.lang = currentLang === "dari" ? "fa" : "en";
 
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        const font = `Bold ${fontSize}px Arial`;
-        ctx.font = font;
-
-        const label = (prefix || "") + (text || "");
-        const lines = label.split("\n");
-        const lineHeight = Math.ceil(fontSize * lineHeightMul);
-
-        let maxLineW = 0;
-        for (const ln of lines) {
-          maxLineW = Math.max(maxLineW, Math.ceil(ctx.measureText(ln).width));
-        }
-
-        const desiredW = Math.max(minW, maxLineW + paddingX * 2);
-        const desiredH = Math.max(
-          128,
-          lines.length * lineHeight + paddingY * 2
-        );
-
-        // HiDPI canvas
-        canvas.width = Math.ceil(desiredW * dpr);
-        canvas.height = Math.ceil(desiredH * dpr);
-        ctx.scale(dpr, dpr);
-
-        // Reapply font after scaling
-        ctx.font = font;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-
-        const backgroundColor = bgColor !== null ? bgColor : color;
-        ctx.fillStyle = "#" + new THREE.Color(backgroundColor).getHexString();
-        ctx.fillRect(0, 0, desiredW, desiredH);
-
-        // inner band
-        ctx.fillStyle = "rgba(255,255,255,0.06)";
-        ctx.fillRect(8, 8, desiredW - 16, desiredH - 16);
-
-        // text
-        ctx.fillStyle = "#ffffff";
-        const startY = desiredH / 2 - ((lines.length - 1) * lineHeight) / 2;
-        lines.forEach((ln, i) => {
-          ctx.fillText(ln, desiredW / 2, startY + i * lineHeight);
+        // Update all translatable elements
+        const elements = document.querySelectorAll("[data-en][data-dari]");
+        elements.forEach((el) => {
+          el.textContent = el.getAttribute(`data-${currentLang}`);
         });
 
-        const texture = new THREE.Texture(canvas);
-        texture.needsUpdate = true;
-        texture.generateMipmaps = false; // prevent blur
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.anisotropy = 1;
-
-        const sprite = new THREE.Sprite(
-          new THREE.SpriteMaterial({
-            map: texture,
-            transparent: true,
-            opacity: 0.95,
-          })
-        );
-
-        const worldHeight = isBoard ? 3 : fontSize === 48 ? 4 : 3;
-        const aspect = desiredW / desiredH;
-        sprite.scale.set(worldHeight * aspect, worldHeight, 1);
-        return sprite;
-      }
-
-      // Create 3D text for zone markers
-      function createZoneMarker(
-        text,
-        color,
-        isSpecial = false,
-        bgColor = null
-      ) {
-        const group = new THREE.Group();
-
-        // Create pole with lower geometry on mobile
-        const poleGeometry = new THREE.CylinderGeometry(
-          0.1,
-          0.1,
-          6,
-          isMobile ? 6 : 12
-        );
-        const poleMaterial = new THREE.MeshPhongMaterial({
-          color: 0x666666,
-          emissive: 0x222222,
-        });
-        const pole = new THREE.Mesh(poleGeometry, poleMaterial);
-        pole.position.y = 3;
-        pole.castShadow = !isMobile;
-        group.add(pole);
-
-        // Create text sprite
-        let textSprite;
-        if (isSpecial) {
-          textSprite = createTextSprite(
-            "LEADS",
-            color,
-            32,
-            "ZONE ",
-            false,
-            bgColor
-          );
+        // Add Dari font class to body
+        if (currentLang === "dari") {
+          document.body.classList.add("font-dari");
         } else {
-          textSprite = createTextSprite(
-            text,
-            color,
-            48,
-            "ZONE ",
-            false,
-            bgColor
-          );
+          document.body.classList.remove("font-dari");
         }
-        textSprite.position.y = 6;
-        group.add(textSprite);
-
-        // Skip glow lights on mobile for performance
-        if (!isMobile) {
-          const light = new THREE.PointLight(color, 0.3, 15);
-          light.position.y = 6;
-          group.add(light);
-        }
-
-        return group;
       }
 
-      // Initialize scene
-      function initScene() {
-        scene = new THREE.Scene();
-        scene.fog = new THREE.Fog(0x0a0a0a, 40, 180);
-        const aspect = window.innerWidth / window.innerHeight;
-        camera = new THREE.PerspectiveCamera(60, aspect, 0.1, 1000);
-        updateCameraPosition();
-
-        // Optimize renderer settings for mobile
-        renderer = new THREE.WebGLRenderer({
-          antialias: !isMobile, // Disable antialiasing on mobile
-          powerPreference: "high-performance",
-          alpha: false,
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        // Lower pixel ratio on mobile for better performance
-        renderer.setPixelRatio(
-          isMobile ? 1 : Math.min(window.devicePixelRatio, 2)
-        );
-
-        // Disable shadows on mobile
-        renderer.shadowMap.enabled = !isMobile;
-        if (!isMobile) {
-          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        }
-
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.0;
-        renderer.outputEncoding = THREE.sRGBEncoding;
-
-        document
-          .getElementById("canvas-container")
-          .appendChild(renderer.domElement);
+      // Mobile menu toggle
+      function toggleMobileMenu() {
+        const menu = document.getElementById("mobileMenu");
+        menu.classList.toggle("hidden");
       }
 
-      // Balanced lighting
-      function setupLighting() {
-        if (isMobile) {
-          // Simplified lighting for mobile - fewer lights, no shadows
-          const ambientLight = new THREE.AmbientLight(0x606060, 0.8);
-          scene.add(ambientLight);
-
-          const mainLight = new THREE.DirectionalLight(0xffffff, 0.6);
-          mainLight.position.set(0, 35, 0);
-          scene.add(mainLight);
-
-          // Only 2 ring lights for mobile
-          for (let i = 0; i < 2; i++) {
-            const angle = (i / 2) * Math.PI * 2;
-            const ringLight = new THREE.PointLight(0xffffff, 0.3, 60);
-            ringLight.position.set(
-              Math.cos(angle) * 20,
-              15,
-              Math.sin(angle) * 20
-            );
-            scene.add(ringLight);
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+            // Close mobile menu if open
+            document.getElementById("mobileMenu").classList.add("hidden");
           }
+        });
+      });
+
+      // Add scroll effect to navigation
+      window.addEventListener("scroll", function () {
+        const nav = document.querySelector("nav");
+        if (window.scrollY > 50) {
+          nav.classList.add("shadow-lg");
         } else {
-          // Full lighting for desktop
-          const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
-          scene.add(ambientLight);
-
-          const mainLight = new THREE.DirectionalLight(0xffffff, 0.7);
-          mainLight.position.set(0, 35, 0);
-          mainLight.castShadow = true;
-          mainLight.shadow.camera.left = -35;
-          mainLight.shadow.camera.right = 35;
-          mainLight.shadow.camera.top = 35;
-          mainLight.shadow.camera.bottom = -35;
-          mainLight.shadow.mapSize.width = 2048;
-          mainLight.shadow.mapSize.height = 2048;
-          mainLight.shadow.bias = -0.0005;
-          scene.add(mainLight);
-
-          for (let i = 0; i < 4; i++) {
-            const angle = (i / 4) * Math.PI * 2;
-            const ringLight = new THREE.SpotLight(0xffffff, 0.3);
-            ringLight.position.set(
-              Math.cos(angle) * 20,
-              15,
-              Math.sin(angle) * 20
-            );
-            ringLight.target.position.set(0, 0, 0);
-            ringLight.angle = Math.PI / 6;
-            ringLight.penumbra = 0.3;
-            ringLight.decay = 2;
-            ringLight.distance = 60;
-            scene.add(ringLight);
-            scene.add(ringLight.target);
-          }
-
-          const blueAccent = new THREE.PointLight(0x3498db, 0.2, 30);
-          blueAccent.position.set(-20, 8, -20);
-          scene.add(blueAccent);
-
-          const greenAccent = new THREE.PointLight(
-            CONFIG.materials.accent,
-            0.2,
-            30
-          );
-          greenAccent.position.set(20, 8, 20);
-          scene.add(greenAccent);
+          nav.classList.remove("shadow-lg");
         }
-      }
-
-      // Create room
-      function createRoom() {
-        const floorGeometry = new THREE.PlaneGeometry(
-          CONFIG.room.width,
-          CONFIG.room.depth
-        );
-        const floorMaterial = new THREE.MeshPhongMaterial({
-          color: CONFIG.materials.floor,
-          shininess: 60,
-          specular: 0x222222,
-        });
-        const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        floor.rotation.x = -Math.PI / 2;
-        floor.receiveShadow = true;
-        scene.add(floor);
-        // Grid
-        const gridHelper = new THREE.GridHelper(80, 40, 0x444444, 0x2a2a2a);
-        gridHelper.position.y = 0.01;
-        scene.add(gridHelper);
-      }
-
-      // Create person with proper proportions
-      function createPerson() {
-        const personGroup = new THREE.Group();
-        const skinColor =
-          CONFIG.person.colors.skin[
-            Math.floor(Math.random() * CONFIG.person.colors.skin.length)
-          ];
-        const hairColor =
-          CONFIG.person.colors.hair[
-            Math.floor(Math.random() * CONFIG.person.colors.hair.length)
-          ];
-        const shirtColor =
-          CONFIG.person.colors.shirt[
-            Math.floor(Math.random() * CONFIG.person.colors.shirt.length)
-          ];
-        const pantsColor =
-          CONFIG.person.colors.pants[
-            Math.floor(Math.random() * CONFIG.person.colors.pants.length)
-          ];
-        // Torso
-        const torsoGeometry = new THREE.BoxGeometry(0.5, 0.6, 0.3);
-        const torsoMaterial = new THREE.MeshPhongMaterial({
-          color: shirtColor,
-        });
-        const torso = new THREE.Mesh(torsoGeometry, torsoMaterial);
-        torso.position.y = 0.9;
-        torso.castShadow = !isMobile;
-        personGroup.add(torso);
-        // Shoulders
-        const shoulderGeometry = new THREE.BoxGeometry(0.6, 0.15, 0.3);
-        const shoulders = new THREE.Mesh(shoulderGeometry, torsoMaterial);
-        shoulders.position.y = 1.15;
-        personGroup.add(shoulders);
-        // Head
-        const headGeometry = new THREE.SphereGeometry(0.15, 12, 12);
-        const headMaterial = new THREE.MeshPhongMaterial({ color: skinColor });
-        const head = new THREE.Mesh(headGeometry, headMaterial);
-        head.position.y = 1.4;
-        head.castShadow = !isMobile;
-        personGroup.add(head);
-        // Hair
-        const hairGeometry = new THREE.SphereGeometry(0.16, 10, 10);
-        const hairMaterial = new THREE.MeshPhongMaterial({ color: hairColor });
-        const hair = new THREE.Mesh(hairGeometry, hairMaterial);
-        hair.position.y = 1.45;
-        hair.scale.y = 0.7;
-        personGroup.add(hair);
-        // Arms
-        const armGeometry = new THREE.CylinderGeometry(0.06, 0.05, 0.5, 8);
-        const leftArm = new THREE.Mesh(armGeometry, torsoMaterial);
-        leftArm.position.set(-0.32, 0.95, 0);
-        leftArm.rotation.z = 0.15;
-        personGroup.add(leftArm);
-        const rightArm = new THREE.Mesh(armGeometry, torsoMaterial);
-        rightArm.position.set(0.32, 0.95, 0);
-        rightArm.rotation.z = -0.15;
-        personGroup.add(rightArm);
-        // Hands
-        const handGeometry = new THREE.SphereGeometry(0.06, 8, 8);
-        const leftHand = new THREE.Mesh(handGeometry, headMaterial);
-        leftHand.position.set(-0.35, 0.7, 0.1);
-        personGroup.add(leftHand);
-        const rightHand = new THREE.Mesh(handGeometry, headMaterial);
-        rightHand.position.set(0.35, 0.7, 0.1);
-        personGroup.add(rightHand);
-        // Waist
-        const waistGeometry = new THREE.BoxGeometry(0.45, 0.1, 0.28);
-        const waist = new THREE.Mesh(
-          waistGeometry,
-          new THREE.MeshPhongMaterial({ color: 0x2a2a2a })
-        );
-        waist.position.y = 0.6;
-        personGroup.add(waist);
-        // Legs (sitting)
-        const thighGeometry = new THREE.BoxGeometry(0.15, 0.5, 0.15);
-        const pantsMaterial = new THREE.MeshPhongMaterial({
-          color: pantsColor,
-        });
-        const leftThigh = new THREE.Mesh(thighGeometry, pantsMaterial);
-        leftThigh.position.set(-0.12, 0.35, 0.25);
-        leftThigh.rotation.x = -Math.PI / 2.2;
-        personGroup.add(leftThigh);
-        const rightThigh = new THREE.Mesh(thighGeometry, pantsMaterial);
-        rightThigh.position.set(0.12, 0.35, 0.25);
-        rightThigh.rotation.x = -Math.PI / 2.2;
-        personGroup.add(rightThigh);
-        // Lower legs
-        const shinGeometry = new THREE.BoxGeometry(0.12, 0.45, 0.12);
-        const leftShin = new THREE.Mesh(shinGeometry, pantsMaterial);
-        leftShin.position.set(-0.12, 0.25, 0.5);
-        personGroup.add(leftShin);
-        const rightShin = new THREE.Mesh(shinGeometry, pantsMaterial);
-        rightShin.position.set(0.12, 0.25, 0.5);
-        personGroup.add(rightShin);
-        // Shoes
-        const shoeGeometry = new THREE.BoxGeometry(0.13, 0.08, 0.2);
-        const shoeMaterial = new THREE.MeshPhongMaterial({ color: 0x1a1a1a });
-        const leftShoe = new THREE.Mesh(shoeGeometry, shoeMaterial);
-        leftShoe.position.set(-0.12, 0.04, 0.55);
-        personGroup.add(leftShoe);
-        const rightShoe = new THREE.Mesh(shoeGeometry, shoeMaterial);
-        rightShoe.position.set(0.12, 0.04, 0.55);
-        personGroup.add(rightShoe);
-        return personGroup;
-      }
-
-      // Create detailed executive chair
-      function createExecutiveChair(
-        color = CONFIG.centralTable.seatColor,
-        opts = {}
-      ) {
-        const {
-          scale = 1.0, // let outer rows use 0.82–0.88 for spacing
-          backHeight = 1.1, // 0.95–1.1 to fine-tune back height
-          headrest = true, // turn off for very tight rows if needed
-        } = opts;
-
-        const chairGroup = new THREE.Group();
-        chairGroup.scale.set(scale, scale, scale);
-
-        const leatherMaterial = new THREE.MeshPhongMaterial({
-          color,
-          shininess: 110,
-          specular: 0x333333,
-        });
-        const chromeMaterial = new THREE.MeshPhongMaterial({
-          color: CONFIG.materials.chrome,
-          shininess: 220,
-          specular: 0xffffff,
-          emissive: 0x111111,
-        });
-
-        // Seat cushion (slightly rounded look via small bevel piece)
-        const seatGeometry = new THREE.BoxGeometry(0.9, 0.12, 0.9);
-        const seat = new THREE.Mesh(seatGeometry, leatherMaterial);
-        seat.position.y = 0.45;
-        seat.castShadow = !isMobile;
-        seat.receiveShadow = !isMobile;
-        chairGroup.add(seat);
-
-        // Subtle piping around the seat
-        const seatEdge = new THREE.Mesh(
-          new THREE.BoxGeometry(0.92, 0.03, 0.92),
-          chromeMaterial
-        );
-        seatEdge.position.y = 0.39;
-        chairGroup.add(seatEdge);
-
-        // Backrest with gentle lumbar bulge
-        const back = new THREE.Mesh(
-          new THREE.BoxGeometry(0.9, backHeight, 0.15),
-          leatherMaterial
-        );
-        back.position.y = 0.45 + backHeight * 0.5; // keep seat at y=0.45 baseline
-        back.position.z = -0.375;
-        back.rotation.x = -0.1;
-        back.castShadow = !isMobile;
-        chairGroup.add(back);
-
-        // Lumbar pad
-        const lumbar = new THREE.Mesh(
-          new THREE.BoxGeometry(0.82, 0.18, 0.07),
-          leatherMaterial
-        );
-        lumbar.position.set(0, back.position.y - backHeight * 0.15, -0.32);
-        chairGroup.add(lumbar);
-
-        // Horizontal stitching (3 slim insets)
-        const stitchMat = new THREE.MeshPhongMaterial({
-          color: new THREE.Color(color).multiplyScalar(0.9),
-          shininess: 20,
-        });
-        [-0.18, 0.05, 0.28].forEach((offY) => {
-          const s = new THREE.Mesh(
-            new THREE.BoxGeometry(0.86, 0.01, 0.071),
-            stitchMat
-          );
-          s.position.set(0, back.position.y + offY, -0.325);
-          chairGroup.add(s);
-        });
-
-        // Headrest (optional)
-        if (headrest) {
-          const head = new THREE.Mesh(
-            new THREE.BoxGeometry(0.7, 0.2, 0.1),
-            leatherMaterial
-          );
-          head.position.y = back.position.y + backHeight * 0.45;
-          head.position.z = -0.35;
-          chairGroup.add(head);
-        }
-
-        // Armrests with pads
-        const arm = new THREE.Mesh(
-          new THREE.BoxGeometry(0.1, 0.3, 0.8),
-          chromeMaterial
-        );
-        const armL = arm.clone();
-        armL.position.set(-0.45, 0.55, 0);
-        const armR = arm.clone();
-        armR.position.set(0.45, 0.55, 0);
-        armL.castShadow = armR.castShadow = !isMobile;
-        chairGroup.add(armL, armR);
-
-        const pad = new THREE.Mesh(
-          new THREE.BoxGeometry(0.12, 0.08, 0.5),
-          leatherMaterial
-        );
-        const padL = pad.clone();
-        padL.position.set(-0.45, 0.7, 0.1);
-        const padR = pad.clone();
-        padR.position.set(0.45, 0.7, 0.1);
-        chairGroup.add(padL, padR);
-
-        // Gas lift + base
-        const pedestal = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.06, 0.08, 0.45, 14),
-          chromeMaterial
-        );
-        pedestal.position.y = 0.225;
-        pedestal.castShadow = !isMobile;
-        chairGroup.add(pedestal);
-
-        // Five-star base with wheels
-        const baseGroup = new THREE.Group();
-        const hub = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.15, 0.15, 0.05, 16),
-          chromeMaterial
-        );
-        hub.position.y = 0.025;
-        baseGroup.add(hub);
-
-        const legs = 5;
-        for (let i = 0; i < legs; i++) {
-          const a = (i / legs) * Math.PI * 2;
-          const leg = new THREE.Mesh(
-            new THREE.BoxGeometry(0.08, 0.04, 0.6),
-            chromeMaterial
-          );
-          leg.position.set(Math.cos(a) * 0.3, 0.02, Math.sin(a) * 0.3);
-          leg.rotation.y = a;
-          leg.castShadow = !isMobile;
-          baseGroup.add(leg);
-
-          // Wheel (lower geo on mobile automatically)
-          const wheel = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.04, 0.04, 0.02, isMobile ? 6 : 8),
-            chromeMaterial
-          );
-          wheel.position.set(Math.cos(a) * 0.6, 0.04, Math.sin(a) * 0.6);
-          wheel.rotation.z = Math.PI / 2;
-          wheel.rotation.y = a;
-          baseGroup.add(wheel);
-        }
-        chairGroup.add(baseGroup);
-
-        return chairGroup;
-      }
-
-      // Create standard chair with details
-      function createStandardChair(color) {
-        const chairGroup = new THREE.Group();
-        const chairMaterial = new THREE.MeshPhongMaterial({
-          color: color,
-          shininess: 80,
-          specular: 0x222222,
-        });
-        const frameMaterial = new THREE.MeshPhongMaterial({
-          color: 0x999999,
-          shininess: 150,
-          specular: 0xffffff,
-        });
-        // Contoured seat
-        const seatGeometry = new THREE.BoxGeometry(0.65, 0.1, 0.65);
-        const seat = new THREE.Mesh(seatGeometry, chairMaterial);
-        seat.position.y = 0.45;
-        seat.castShadow = !isMobile;
-        seat.receiveShadow = !isMobile;
-        chairGroup.add(seat);
-        // Seat cushion detail
-        const cushionGeometry = new THREE.BoxGeometry(0.6, 0.05, 0.6);
-        const cushion = new THREE.Mesh(cushionGeometry, chairMaterial);
-        cushion.position.y = 0.52;
-        chairGroup.add(cushion);
-        // Ergonomic backrest
-        const backGeometry = new THREE.BoxGeometry(0.65, 0.8, 0.1);
-        const backrest = new THREE.Mesh(backGeometry, chairMaterial);
-        backrest.position.y = 0.9;
-        backrest.position.z = -0.275;
-        backrest.rotation.x = -0.05;
-        backrest.castShadow = !isMobile;
-        chairGroup.add(backrest);
-        // Refined frame legs
-        const legPositions = [
-          { x: 0.27, z: 0.27 },
-          { x: -0.27, z: 0.27 },
-          { x: 0.27, z: -0.27 },
-          { x: -0.27, z: -0.27 },
-        ];
-        legPositions.forEach((pos) => {
-          const legGeometry = new THREE.CylinderGeometry(
-            0.025,
-            0.025,
-            0.45,
-            12
-          );
-          const leg = new THREE.Mesh(legGeometry, frameMaterial);
-          leg.position.set(pos.x, 0.225, pos.z);
-          leg.castShadow = !isMobile;
-          chairGroup.add(leg);
-          // Foot caps
-          const footGeometry = new THREE.SphereGeometry(0.03, 8, 8);
-          const foot = new THREE.Mesh(footGeometry, frameMaterial);
-          foot.position.set(pos.x, 0.03, pos.z);
-          chairGroup.add(foot);
-        });
-        // Cross supports
-        const supportGeometry = new THREE.BoxGeometry(0.54, 0.02, 0.02);
-        const frontSupport = new THREE.Mesh(supportGeometry, frameMaterial);
-        frontSupport.position.set(0, 0.15, 0.27);
-        chairGroup.add(frontSupport);
-        const backSupport = new THREE.Mesh(supportGeometry, frameMaterial);
-        backSupport.position.set(0, 0.15, -0.27);
-        chairGroup.add(backSupport);
-        return chairGroup;
-      }
-
-      // Create premium central table
-      function createCentralTable() {
-        const tableGroup = new THREE.Group();
-        // Glass table top
-        const tableGeometry = new THREE.CylinderGeometry(
-          CONFIG.centralTable.radius,
-          CONFIG.centralTable.radius,
-          CONFIG.centralTable.height,
-          64
-        );
-        const tableMaterial = new THREE.MeshPhongMaterial({
-          color: CONFIG.centralTable.glassColor,
-          shininess: 150,
-          specular: 0xffffff,
-          opacity: 0.9,
-          transparent: true,
-        });
-        const tableTop = new THREE.Mesh(tableGeometry, tableMaterial);
-        tableTop.position.y = CONFIG.centralTable.tableHeight;
-        tableTop.castShadow = !isMobile;
-        tableTop.receiveShadow = !isMobile;
-        tableGroup.add(tableTop);
-        // Chrome edge trim
-        const edgeGeometry = new THREE.TorusGeometry(
-          CONFIG.centralTable.radius,
-          0.03,
-          8,
-          64
-        );
-        const edgeMaterial = new THREE.MeshPhongMaterial({
-          color: CONFIG.materials.chrome,
-          shininess: 200,
-          specular: 0xffffff,
-        });
-        const edge = new THREE.Mesh(edgeGeometry, edgeMaterial);
-        edge.position.y = CONFIG.centralTable.tableHeight;
-        edge.rotation.x = Math.PI / 2;
-        tableGroup.add(edge);
-        // Modern support structure
-        const supportMaterial = new THREE.MeshPhongMaterial({
-          color: CONFIG.materials.chrome,
-          shininess: 200,
-          specular: 0xffffff,
-          emissive: 0x111111,
-        });
-        // Dual column design
-        for (let i = 0; i < 2; i++) {
-          const supportGeometry = new THREE.CylinderGeometry(
-            0.15,
-            0.2,
-            CONFIG.centralTable.tableHeight - 0.1,
-            16
-          );
-          const support = new THREE.Mesh(supportGeometry, supportMaterial);
-          support.position.x = (i === 0 ? -1 : 1) * 0.8;
-          support.position.y = (CONFIG.centralTable.tableHeight - 0.1) / 2;
-          support.castShadow = !isMobile;
-          tableGroup.add(support);
-        }
-        // Connection beam
-        const beamGeometry = new THREE.BoxGeometry(1.6, 0.1, 0.3);
-        const beam = new THREE.Mesh(beamGeometry, supportMaterial);
-        beam.position.y = 0.15;
-        tableGroup.add(beam);
-        // Wide stable base
-        const baseGeometry = new THREE.CylinderGeometry(1.8, 1.8, 0.05, 32);
-        const base = new THREE.Mesh(baseGeometry, supportMaterial);
-        base.position.y = 0.025;
-        base.castShadow = !isMobile;
-        tableGroup.add(base);
-        // Chairs and people
-        for (let i = 0; i < CONFIG.centralTable.seatCount; i++) {
-          const angle = (i / CONFIG.centralTable.seatCount) * Math.PI * 2;
-          const x = Math.cos(angle) * CONFIG.centralTable.seatRadius;
-          const z = Math.sin(angle) * CONFIG.centralTable.seatRadius;
-          const chair = createExecutiveChair();
-          chair.position.set(x, 0, z);
-          chair.rotation.y = -angle - Math.PI / 2;
-          tableGroup.add(chair);
-          if (showPeople) {
-            const person = createPerson();
-            person.position.set(x, 0.05, z);
-            person.rotation.y = -angle - Math.PI / 2;
-            peopleGroups.push(person);
-            tableGroup.add(person);
-          }
-        }
-        scene.add(tableGroup);
-      }
-
-      // Create second ring with wider desk
-      function createSecondRing() {
-        const ringGroup = new THREE.Group();
-        // Wider circular desk/table
-        const ringShape = new THREE.Shape();
-        ringShape.absarc(
-          0,
-          0,
-          CONFIG.secondRing.outerRadius,
-          0,
-          Math.PI * 2,
-          false
-        );
-        ringShape.holes.push(
-          new THREE.Path().absarc(
-            0,
-            0,
-            CONFIG.secondRing.innerRadius,
-            0,
-            Math.PI * 2,
-            true
-          )
-        );
-        const ring = new THREE.Mesh(
-          new THREE.ExtrudeGeometry(ringShape, {
-            depth: CONFIG.secondRing.height,
-            bevelEnabled: true,
-            bevelThickness: 0.02,
-            bevelSize: 0.02,
-          }),
-          new THREE.MeshPhongMaterial({
-            color: CONFIG.secondRing.tableColor,
-            shininess: 100,
-            specular: 0x444444,
-          })
-        );
-        ring.rotation.x = -Math.PI / 2;
-        ring.position.y = CONFIG.secondRing.tableHeight;
-        ring.castShadow = !isMobile;
-        ring.receiveShadow = !isMobile;
-        ringGroup.add(ring);
-        // Chrome trim
-        const outerTrimGeometry = new THREE.TorusGeometry(
-          CONFIG.secondRing.outerRadius,
-          0.02,
-          8,
-          64
-        );
-        const trimMaterial = new THREE.MeshPhongMaterial({
-          color: CONFIG.materials.chrome,
-          shininess: 200,
-          specular: 0xffffff,
-        });
-        const outerTrim = new THREE.Mesh(outerTrimGeometry, trimMaterial);
-        outerTrim.position.y =
-          CONFIG.secondRing.tableHeight + CONFIG.secondRing.height;
-        outerTrim.rotation.x = Math.PI / 2;
-        ringGroup.add(outerTrim);
-        const innerTrimGeometry = new THREE.TorusGeometry(
-          CONFIG.secondRing.innerRadius,
-          0.02,
-          8,
-          64
-        );
-        const innerTrim = new THREE.Mesh(innerTrimGeometry, trimMaterial);
-        innerTrim.position.y =
-          CONFIG.secondRing.tableHeight + CONFIG.secondRing.height;
-        innerTrim.rotation.x = Math.PI / 2;
-        ringGroup.add(innerTrim);
-        // Support pillars
-        for (let i = 0; i < 8; i++) {
-          const angle = (i / 8) * Math.PI * 2;
-          const radius =
-            (CONFIG.secondRing.innerRadius + CONFIG.secondRing.outerRadius) / 2;
-          const pillarGeometry = new THREE.CylinderGeometry(
-            0.1,
-            0.12,
-            CONFIG.secondRing.tableHeight,
-            12
-          );
-          const pillar = new THREE.Mesh(
-            pillarGeometry,
-            new THREE.MeshPhongMaterial({
-              color: CONFIG.materials.metal,
-              shininess: 200,
-            })
-          );
-          pillar.position.set(
-            Math.cos(angle) * radius,
-            CONFIG.secondRing.tableHeight / 2,
-            Math.sin(angle) * radius
-          );
-          pillar.castShadow = !isMobile;
-          ringGroup.add(pillar);
-        }
-        // Chairs and people
-        for (let i = 0; i < CONFIG.secondRing.seatCount; i++) {
-          const angle = (i / CONFIG.secondRing.seatCount) * Math.PI * 2;
-          const x = Math.cos(angle) * CONFIG.secondRing.seatRadius;
-          const z = Math.sin(angle) * CONFIG.secondRing.seatRadius;
-          const chair = createExecutiveChair(CONFIG.secondRing.seatColor);
-          chair.position.set(x, 0, z);
-          chair.rotation.y = -angle - Math.PI / 2;
-          ringGroup.add(chair);
-          if (showPeople) {
-            const person = createPerson();
-            person.position.set(x, 0.05, z);
-            person.rotation.y = -angle - Math.PI / 2;
-            peopleGroups.push(person);
-            ringGroup.add(person);
-          }
-        }
-        scene.add(ringGroup);
-      }
-
-      // Calculate row configuration
-      function calculateRowConfig(totalSeats) {
-        const configs = [];
-        let seatsRemaining = totalSeats;
-        let startSeats = 3;
-        let rowCount = 0;
-        while (seatsRemaining > 0) {
-          const seatsInRow = startSeats + rowCount;
-          configs.push({ seats: seatsInRow, row: rowCount });
-          seatsRemaining -= seatsInRow;
-          rowCount++;
-          if (seatsRemaining < 0) {
-            configs[configs.length - 1].seats += seatsRemaining;
-          }
-        }
-        return configs.filter((config) => config.seats > 0);
-      }
-
-      // Create improved connecting stairs
-      function createConnectingStairs(sectionAngle, seatsPerSection) {
-        const stairGroup = new THREE.Group();
-        const startRadius = CONFIG.secondRing.outerRadius + 0.8;
-        // Calculate total rows needed
-        const rowConfigs = calculateRowConfig(seatsPerSection);
-        const totalRows = rowConfigs.length;
-        const endRadius =
-          CONFIG.outerSeating.startRadius +
-          (totalRows - 1) * CONFIG.outerSeating.rowDepth;
-        const totalHeight = totalRows * CONFIG.outerSeating.rowHeight;
-        const steps = Math.ceil(totalHeight / 0.15); // More steps for full height
-        const stepWidth = 1.8;
-        const stepHeight = totalHeight / steps;
-        // Create sleek modern stairs going all the way up
-        const stairMaterial = new THREE.MeshPhongMaterial({
-          color: CONFIG.materials.stairs,
-          shininess: 60,
-        });
-        for (let i = 0; i < steps; i++) {
-          const progress = i / steps;
-          const radius = startRadius + (endRadius - startRadius) * progress;
-          const height = i * stepHeight;
-          // Step tread with curved edges
-          const stepShape = new THREE.Shape();
-          const stepDepth = (endRadius - startRadius) / steps;
-          const innerAngle = sectionAngle - 0.04;
-          const outerAngle = sectionAngle + 0.04;
-          stepShape.absarc(
-            0,
-            0,
-            radius + stepDepth / 2,
-            innerAngle,
-            outerAngle,
-            false
-          );
-          stepShape.lineTo(
-            Math.cos(outerAngle) * (radius - stepDepth / 2),
-            Math.sin(outerAngle) * (radius - stepDepth / 2)
-          );
-          stepShape.absarc(
-            0,
-            0,
-            radius - stepDepth / 2,
-            outerAngle,
-            innerAngle,
-            true
-          );
-          stepShape.lineTo(
-            Math.cos(innerAngle) * (radius + stepDepth / 2),
-            Math.sin(innerAngle) * (radius + stepDepth / 2)
-          );
-          const stepGeometry = new THREE.ExtrudeGeometry(stepShape, {
-            depth: 0.03,
-            bevelEnabled: true,
-            bevelThickness: 0.005,
-            bevelSize: 0.005,
-          });
-          const step = new THREE.Mesh(stepGeometry, stairMaterial);
-          step.rotation.x = -Math.PI / 2;
-          step.position.y = height;
-          step.castShadow = !isMobile;
-          step.receiveShadow = !isMobile;
-          stairGroup.add(step);
-          // Step riser
-          if (i > 0) {
-            const riserGeometry = new THREE.BoxGeometry(
-              stepWidth,
-              stepHeight - 0.01,
-              0.02
-            );
-            const riser = new THREE.Mesh(riserGeometry, stairMaterial);
-            riser.position.set(
-              Math.cos(sectionAngle) * radius,
-              height - stepHeight / 2,
-              Math.sin(sectionAngle) * radius
-            );
-            riser.rotation.y = -sectionAngle;
-            stairGroup.add(riser);
-          }
-        }
-        // Modern glass and chrome handrails extending full height
-        const railMaterial = new THREE.MeshPhongMaterial({
-          color: CONFIG.materials.stairRail,
-          shininess: 200,
-          specular: 0xffffff,
-        });
-        const glassMaterial = new THREE.MeshPhongMaterial({
-          color: 0x88aaff,
-          opacity: 0.2,
-          transparent: true,
-        });
-        // Handrail posts and rails along full length
-        [-0.8, 0.8].forEach((offset) => {
-          const railPosts = [];
-          const postInterval = Math.max(3, Math.floor(steps / 8)); // Posts every few steps
-          for (let i = 0; i <= steps; i += postInterval) {
-            const progress = i / steps;
-            const radius = startRadius + (endRadius - startRadius) * progress;
-            const height = i * stepHeight;
-            const postGeometry = new THREE.CylinderGeometry(
-              0.025,
-              0.025,
-              0.9,
-              12
-            );
-            const post = new THREE.Mesh(postGeometry, railMaterial);
-            post.position.set(
-              Math.cos(sectionAngle + offset * 0.06) * radius,
-              height + 0.45,
-              Math.sin(sectionAngle + offset * 0.06) * radius
-            );
-            post.castShadow = !isMobile;
-            stairGroup.add(post);
-            railPosts.push(
-              post.position.clone().add(new THREE.Vector3(0, 0.4, 0))
-            );
-          }
-          // Connect posts with rails
-          if (railPosts.length > 1) {
-            for (let i = 0; i < railPosts.length - 1; i++) {
-              const start = railPosts[i];
-              const end = railPosts[i + 1];
-              const distance = start.distanceTo(end);
-              const midpoint = new THREE.Vector3().lerpVectors(start, end, 0.5);
-              const railGeometry = new THREE.CylinderGeometry(
-                0.03,
-                0.03,
-                distance,
-                12
-              );
-              const rail = new THREE.Mesh(railGeometry, railMaterial);
-              rail.position.copy(midpoint);
-              rail.lookAt(end);
-              rail.rotateX(Math.PI / 2);
-              stairGroup.add(rail);
-            }
-          }
-          // Glass panels at intervals
-          for (let i = 0; i < steps; i += 2) {
-            const progress = (i + 0.5) / steps;
-            const radius = startRadius + (endRadius - startRadius) * progress;
-            const height = (i + 0.5) * stepHeight;
-            const panelGeometry = new THREE.BoxGeometry(
-              0.02,
-              0.7,
-              stepWidth / (steps / 4)
-            );
-            const panel = new THREE.Mesh(panelGeometry, glassMaterial);
-            panel.position.set(
-              Math.cos(sectionAngle + offset * 0.06) * radius,
-              height,
-              Math.sin(sectionAngle + offset * 0.06) * radius
-            );
-            panel.rotation.y = -sectionAngle;
-            stairGroup.add(panel);
-          }
-        });
-        // Add lighting along the stairs
-        for (let i = 0; i < 3; i++) {
-          const progress = (i + 1) / 4;
-          const radius = startRadius + (endRadius - startRadius) * progress;
-          const height = totalHeight * progress;
-          const stairLight = new THREE.PointLight(0xffffcc, 0.2, 10);
-          stairLight.position.set(
-            Math.cos(sectionAngle) * radius,
-            height,
-            Math.sin(sectionAngle) * radius
-          );
-          stairGroup.add(stairLight);
-        }
-        return stairGroup;
-      }
-
-      // Create triangular section with wider desks
-      function createTriangularSection(
-        sectionAngle,
-        sectionIndex,
-        seatsPerSection = 25
-      ) {
-        const sectionGroup = new THREE.Group();
-        const rowConfigs = calculateRowConfig(seatsPerSection);
-        rowConfigs.forEach((config) => {
-          const radius =
-            CONFIG.outerSeating.startRadius +
-            config.row * CONFIG.outerSeating.rowDepth;
-          const elevation = config.row * CONFIG.outerSeating.rowHeight;
-          const sectionSpan =
-            ((Math.PI * 2) / CONFIG.outerSeating.sections) * 0.85;
-          const seatSpacing = sectionSpan / (config.seats + 1);
-          // Platform
-          const platformShape = new THREE.Shape();
-          const platformInner = radius - CONFIG.outerSeating.rowDepth * 0.45;
-          const platformOuter = radius + CONFIG.outerSeating.rowDepth * 0.45;
-          const platformStart = sectionAngle - sectionSpan / 2;
-          const platformEnd = sectionAngle + sectionSpan / 2;
-          platformShape.absarc(
-            0,
-            0,
-            platformOuter,
-            platformStart,
-            platformEnd,
-            false
-          );
-          platformShape.lineTo(
-            Math.cos(platformEnd) * platformInner,
-            Math.sin(platformEnd) * platformInner
-          );
-          platformShape.absarc(
-            0,
-            0,
-            platformInner,
-            platformEnd,
-            platformStart,
-            true
-          );
-          platformShape.lineTo(
-            Math.cos(platformStart) * platformOuter,
-            Math.sin(platformStart) * platformOuter
-          );
-          const platform = new THREE.Mesh(
-            new THREE.ExtrudeGeometry(platformShape, {
-              depth: 0.12,
-              bevelEnabled: false,
-            }),
-            new THREE.MeshPhongMaterial({
-              color: 0x2a2a2a,
-              shininess: 30,
-            })
-          );
-          platform.rotation.x = -Math.PI / 2;
-          platform.position.y = elevation - 0.06;
-          platform.receiveShadow = !isMobile;
-          platform.castShadow = !isMobile;
-          sectionGroup.add(platform);
-          // Wider desk with row-specific color (green for committee rows)
-          const isCommitteeRow =
-            config.row < CONFIG.outerSeating.committee.rows;
-          const deskColor = isCommitteeRow
-            ? CONFIG.outerSeating.committee.seatColor // match green chairs
-            : CONFIG.materials.darkWood; // normal wood for others
-
-          const deskShape = new THREE.Shape();
-          const deskInner = radius - CONFIG.outerSeating.tableDepth;
-          const deskOuter = radius - 0.05;
-          deskShape.absarc(0, 0, deskOuter, platformStart, platformEnd, false);
-          deskShape.lineTo(
-            Math.cos(platformEnd) * deskInner,
-            Math.sin(platformEnd) * deskInner
-          );
-          deskShape.absarc(0, 0, deskInner, platformEnd, platformStart, true);
-          deskShape.lineTo(
-            Math.cos(platformStart) * deskOuter,
-            Math.sin(platformStart) * deskOuter
-          );
-
-          const desk = new THREE.Mesh(
-            new THREE.ExtrudeGeometry(deskShape, {
-              depth: 0.04,
-              bevelEnabled: true,
-              bevelThickness: 0.01,
-              bevelSize: 0.01,
-            }),
-            new THREE.MeshPhongMaterial({
-              color: deskColor,
-              shininess: 100,
-              specular: 0x222222,
-            })
-          );
-          desk.rotation.x = -Math.PI / 2;
-          desk.position.y = elevation + CONFIG.outerSeating.tableHeight;
-          desk.castShadow = !isMobile;
-          desk.receiveShadow = !isMobile;
-          sectionGroup.add(desk);
-
-          // Modesty panel (slightly darker than the desk color on committee rows)
-          const panelHeight = 0.35;
-          const panelShape = new THREE.Shape();
-          panelShape.absarc(
-            0,
-            0,
-            deskInner - 0.02,
-            platformStart,
-            platformEnd,
-            false
-          );
-          panelShape.absarc(
-            0,
-            0,
-            deskInner - 0.04,
-            platformEnd,
-            platformStart,
-            true
-          );
-
-          const panelColor = new THREE.Color(deskColor).multiplyScalar(
-            isCommitteeRow ? 0.75 : 1.0
-          );
-
-          const panel = new THREE.Mesh(
-            new THREE.ExtrudeGeometry(panelShape, {
-              depth: panelHeight,
-              bevelEnabled: false,
-            }),
-            new THREE.MeshPhongMaterial({
-              color: panelColor,
-              shininess: 40,
-              specular: 0x111111,
-            })
-          );
-          panel.rotation.x = -Math.PI / 2;
-          panel.position.y =
-            elevation + CONFIG.outerSeating.tableHeight - panelHeight;
-          sectionGroup.add(panel);
-
-          // Chairs and people
-          for (let seatIndex = 0; seatIndex < config.seats; seatIndex++) {
-            const localAngle = -sectionSpan / 2 + seatSpacing * (seatIndex + 1);
-            const globalAngle = sectionAngle + localAngle;
-            const chairColor =
-              config.row < CONFIG.outerSeating.committee.rows
-                ? CONFIG.outerSeating.committee.seatColor
-                : sectionIndex % 2 === 0
-                ? CONFIG.outerSeating.seatColor
-                : CONFIG.outerSeating.seatColorAlt;
-            const chair = createExecutiveChair(chairColor, {
-              scale: 0.85,
-              backHeight: 1.05,
-            });
-            const x = Math.cos(globalAngle) * radius;
-            const z = Math.sin(globalAngle) * radius;
-            chair.position.set(x, elevation, z);
-            chair.rotation.y = -globalAngle - Math.PI / 2;
-            sectionGroup.add(chair);
-            if (showPeople) {
-              const person = createPerson();
-              person.position.set(x, elevation + 0.05, z);
-              person.rotation.y = -globalAngle - Math.PI / 2;
-              peopleGroups.push(person);
-              sectionGroup.add(person);
-            }
-          }
-        });
-        return sectionGroup;
-      }
-
-      // Create zone labels
-      function createZoneLabels() {
-        if (zoneLabelsGroup) scene.remove(zoneLabelsGroup);
-        zoneLabelsGroup = new THREE.Group();
-
-        // Add outer zone markers
-        for (let i = 0; i < CONFIG.outerSeating.sections; i++) {
-          const sectionAngle = (i / CONFIG.outerSeating.sections) * Math.PI * 2;
-          const labelDistance = 20;
-
-          // Create zone marker with seat color as background
-          const seatColor =
-            i % 2 === 0
-              ? CONFIG.outerSeating.seatColor
-              : CONFIG.outerSeating.seatColorAlt;
-
-          const marker = createZoneMarker(
-            CONFIG.zones.labels[i],
-            CONFIG.zones.colors[i],
-            false,
-            seatColor
-          );
-
-          marker.position.x = Math.cos(sectionAngle) * labelDistance;
-          marker.position.z = Math.sin(sectionAngle) * labelDistance;
-
-          // Make marker face center
-          marker.rotation.y = -sectionAngle;
-
-          zoneLabelsGroup.add(marker);
-        }
-
-        // Add center table label - "Board Members" with central seat color
-        const boardLabel = createTextSprite(
-          "BOARD MEMBERS\nCOMMITTEES LEADS", // two lines
-          0xffd700,
-          36,
-          "", // no prefix
-          true,
-          CONFIG.centralTable.seatColor
-        );
-        boardLabel.position.y = 3.5;
-        boardLabel.position.x = 0;
-        boardLabel.position.z = 0;
-        zoneLabelsGroup.add(boardLabel);
-
-        // Add second ring label - "Zone Leads" with second ring seat color
-        const zoneLeadsLabel = createTextSprite(
-          "LEADS", // text
-          0x4caf50, // color
-          36, // fontSize
-          "ZONE ", // prefix (renders "ZONE LEADS")
-          false, // isBoard
-          CONFIG.secondRing.seatColor, // bg
-          {
-            minW: 240, // narrower board width
-            paddingX: 18, // tighter side padding
-            paddingY: 14,
-            dpr: 2, // HiDPI for sharp edges
-          }
-        );
-
-        zoneLeadsLabel.position.set(0, 3.5, -9);
-        // keep it visible over nearby geometry if needed:
-        zoneLeadsLabel.material.depthTest = false;
-        zoneLeadsLabel.renderOrder = 999;
-
-        zoneLabelsGroup.add(zoneLeadsLabel);
-
-        const committeeLabel = createTextSprite(
-          "COMMITTEES MEMBERS",
-          0x8e44ad,
-          34,
-          "",
-          true,
-          CONFIG.outerSeating.committee.seatColor,
-          {
-            minW: 260, // ↓ narrower board
-            paddingX: 24, // ↓ tighter side padding
-            paddingY: 18,
-            dpr: 2, // crisp text on high-DPI
-          }
-        );
-
-        // keep your existing placement:
-        const committeeBaseRadius =
-          CONFIG.outerSeating.startRadius + CONFIG.outerSeating.rowDepth * 0.5;
-        const angle = Math.PI / 6;
-        committeeLabel.position.set(
-          Math.cos(angle) * committeeBaseRadius,
-          3.8,
-          Math.sin(angle) * committeeBaseRadius
-        );
-        committeeLabel.rotation.y = -angle;
-        committeeLabel.material.depthTest = false;
-        committeeLabel.renderOrder = 999;
-        zoneLabelsGroup.add(committeeLabel);
-
-        scene.add(zoneLabelsGroup);
-      }
-
-      // Create outer seating
-      function createOuterSeating(seatsPerSection = 25) {
-        if (outerSeatingGroup) scene.remove(outerSeatingGroup);
-        if (stairsGroup) scene.remove(stairsGroup);
-        outerSeatingGroup = new THREE.Group();
-        stairsGroup = new THREE.Group();
-        const rowConfigs = calculateRowConfig(seatsPerSection);
-        for (let i = 0; i < CONFIG.outerSeating.sections; i++) {
-          const sectionAngle = (i / CONFIG.outerSeating.sections) * Math.PI * 2;
-          // Add section
-          const section = createTriangularSection(
-            sectionAngle,
-            i,
-            seatsPerSection
-          );
-          outerSeatingGroup.add(section);
-          // Add stairs between sections extending all the way up
-          const stairAngle =
-            sectionAngle + (Math.PI * 2) / CONFIG.outerSeating.sections / 2;
-          // Extended stairs from second ring through all outer seating tiers
-          const connectingStairs = createConnectingStairs(
-            stairAngle,
-            seatsPerSection
-          );
-          stairsGroup.add(connectingStairs);
-        }
-        scene.add(outerSeatingGroup);
-        scene.add(stairsGroup);
-
-        // Create zone labels
-        if (showZoneLabels) {
-          createZoneLabels();
-        }
-
-        updateStatistics(seatsPerSection);
-      }
-
-      // Update zone labels visibility
-      function updateZoneLabels(visible) {
-        showZoneLabels = visible;
-        if (visible) {
-          createZoneLabels();
-        } else if (zoneLabelsGroup) {
-          scene.remove(zoneLabelsGroup);
-          zoneLabelsGroup = null;
-        }
-      }
-
-      // Update statistics
-      function updateStatistics(seatsPerSection) {
-        const totalOuter = CONFIG.outerSeating.sections * seatsPerSection;
-        const total = 7 + 10 + totalOuter;
-        document.querySelector(".stats").innerHTML = `
-          <h4>Room Statistics</h4>
-          <div class="stat-item">
-            <span>Central:</span>
-            <span>7 seats</span>
-          </div>
-          <div class="stat-item">
-            <span>Second Ring:</span>
-            <span>10 seats</span>
-          </div>
-          <div class="stat-item">
-            <span>Outer Zones:</span>
-            <span>10 × ${seatsPerSection}</span>
-          </div>
-          <div class="stat-item">
-            <span>Total:</span>
-            <span>${total} seats</span>
-          </div>
-        `;
-      }
-
-      // Update people
-      function updatePeople(visible) {
-        peopleGroups.forEach((group) => {
-          if (group.parent) group.parent.remove(group);
-        });
-        peopleGroups = [];
-        showPeople = visible;
-        if (visible) {
-          clearScene();
-          createRoom();
-          createCentralTable();
-          createSecondRing();
-          const seats = parseInt(
-            document.getElementById("seatsPerSection").value
-          );
-          createOuterSeating(seats);
-        }
-      }
-
-      // Clear scene
-      function clearScene() {
-        while (scene.children.length > 0) {
-          const child = scene.children[0];
-          if (
-            child.type !== "DirectionalLight" &&
-            child.type !== "AmbientLight" &&
-            child.type !== "SpotLight" &&
-            child.type !== "PointLight" &&
-            child.type !== "HemisphereLight"
-          ) {
-            scene.remove(child);
-          } else {
-            break;
-          }
-        }
-      }
-
-      // Update camera position
-      function updateCameraPosition() {
-        if (cameraMode === "orbit") {
-          camera.position.x =
-            cameraTarget.x +
-            cameraDistance *
-              Math.sin(cameraRotation.theta) *
-              Math.cos(cameraRotation.phi);
-          camera.position.y =
-            cameraTarget.y + cameraDistance * Math.sin(cameraRotation.phi);
-          camera.position.z =
-            cameraTarget.z +
-            cameraDistance *
-              Math.cos(cameraRotation.theta) *
-              Math.cos(cameraRotation.phi);
-          camera.lookAt(cameraTarget);
-        }
-      }
-
-      // Setup controls
-      function setupControls() {
-        // Toggle controls panel
-        const controlsPanel = document.getElementById("controlsPanel");
-        const toggleButton = document.getElementById("toggleControls");
-
-        toggleButton.addEventListener("click", (e) => {
-          e.stopPropagation();
-          controlsPanel.classList.toggle("collapsed");
-        });
-
-        // Seats slider
-        document
-          .getElementById("seatsPerSection")
-          .addEventListener("input", (e) => {
-            const seats = parseInt(e.target.value);
-            const rowConfigs = calculateRowConfig(seats);
-            const pattern = rowConfigs.map((c) => c.seats).join("→");
-            document.getElementById("seatsValue").textContent =
-              seats + " seats (" + pattern + ")";
-          });
-        // Rebuild button
-        document
-          .getElementById("rebuildSeating")
-          .addEventListener("click", () => {
-            const seats = parseInt(
-              document.getElementById("seatsPerSection").value
-            );
-            clearScene();
-            createRoom();
-            peopleGroups = [];
-            createCentralTable();
-            createSecondRing();
-            createOuterSeating(seats);
-          });
-        // People toggle
-        document
-          .getElementById("showPeople")
-          .addEventListener("change", (e) => {
-            updatePeople(e.target.checked);
-          });
-        // Zone labels toggle
-        document
-          .getElementById("showZoneLabels")
-          .addEventListener("change", (e) => {
-            updateZoneLabels(e.target.checked);
-          });
-        // Camera modes
-        document.getElementById("orbitMode").addEventListener("click", () => {
-          cameraMode = "orbit";
-          updateCameraPosition();
-        });
-        document.getElementById("freeMode").addEventListener("click", () => {
-          cameraMode = "free";
-        });
-        // Reset view
-        document.getElementById("resetView").addEventListener("click", () => {
-          cameraDistance = 50;
-          cameraTarget.set(0, 2, 0);
-          cameraRotation = { theta: Math.PI / 4, phi: Math.PI / 3.5 };
-          camera.position.set(30, 30, 30);
-          velocity.set(0, 0, 0);
-          updateCameraPosition();
-        });
-      }
-
-      // Keyboard controls
-      function setupKeyboardControls() {
-        document.addEventListener("keydown", (e) => {
-          keys[e.key.toLowerCase()] = true;
-          if (e.key === " ") {
-            e.preventDefault();
-            cameraMode = "orbit";
-            updateCameraPosition();
-          }
-        });
-        document.addEventListener("keyup", (e) => {
-          keys[e.key.toLowerCase()] = false;
-        });
-      }
-
-      // Mouse controls
-      function setupMouseControls() {
-        let isPointerLocked = false;
-        renderer.domElement.addEventListener("click", () => {
-          if (cameraMode === "free" && !isPointerLocked) {
-            renderer.domElement.requestPointerLock();
-          }
-        });
-        document.addEventListener("pointerlockchange", () => {
-          isPointerLocked = document.pointerLockElement === renderer.domElement;
-        });
-        document.addEventListener("mousemove", (e) => {
-          if (cameraMode === "free" && isPointerLocked) {
-            const sensitivity = 0.002;
-            camera.rotation.y -= e.movementX * sensitivity;
-            camera.rotation.x -= e.movementY * sensitivity;
-            camera.rotation.x = Math.max(
-              -Math.PI / 2,
-              Math.min(Math.PI / 2, camera.rotation.x)
-            );
-          }
-        });
-        renderer.domElement.addEventListener("mousedown", (e) => {
-          if (cameraMode === "orbit") {
-            isDragging = true;
-            mouseButton = e.button;
-            previousMouse = { x: e.clientX, y: e.clientY };
-            e.preventDefault();
-          }
-        });
-        renderer.domElement.addEventListener("mouseup", () => {
-          isDragging = false;
-        });
-        renderer.domElement.addEventListener("mousemove", (e) => {
-          if (!isDragging || cameraMode !== "orbit") return;
-          const deltaX = e.clientX - previousMouse.x;
-          const deltaY = e.clientY - previousMouse.y;
-          if (mouseButton === 0) {
-            // Left button - rotate
-            cameraRotation.theta -= deltaX * 0.01;
-            cameraRotation.phi = Math.max(
-              0.1,
-              Math.min(Math.PI - 0.1, cameraRotation.phi + deltaY * 0.01)
-            );
-            updateCameraPosition();
-          } else if (mouseButton === 2) {
-            // Right button - pan
-            const panSpeed = 0.1;
-            const right = new THREE.Vector3();
-            const up = new THREE.Vector3(0, 1, 0);
-            // Calculate right vector
-            const forward = new THREE.Vector3(
-              cameraTarget.x - camera.position.x,
-              0,
-              cameraTarget.z - camera.position.z
-            ).normalize();
-            right.crossVectors(forward, up).normalize();
-            // Pan the camera target
-            cameraTarget.x -= right.x * deltaX * panSpeed;
-            cameraTarget.z -= right.z * deltaX * panSpeed;
-            cameraTarget.y += deltaY * panSpeed * 0.5;
-            updateCameraPosition();
-          }
-          previousMouse = { x: e.clientX, y: e.clientY };
-        });
-        renderer.domElement.addEventListener("wheel", (e) => {
-          e.preventDefault();
-          if (cameraMode === "orbit") {
-            cameraDistance = Math.max(
-              10,
-              Math.min(150, cameraDistance + e.deltaY * 0.05)
-            );
-            updateCameraPosition();
-          }
-        });
-        renderer.domElement.addEventListener("contextmenu", (e) => {
-          e.preventDefault();
-        });
-      }
-
-      // Touch controls
-      function setupTouchControls() {
-        let touches = [];
-        renderer.domElement.addEventListener("touchstart", (e) => {
-          e.preventDefault();
-          touches = Array.from(e.touches);
-          if (touches.length === 1) {
-            isDragging = true;
-            previousMouse = { x: touches[0].clientX, y: touches[0].clientY };
-          } else if (touches.length === 2) {
-            const dx = touches[0].clientX - touches[1].clientX;
-            const dy = touches[0].clientY - touches[1].clientY;
-            touchStartDistance = Math.sqrt(dx * dx + dy * dy);
-          }
-        });
-        renderer.domElement.addEventListener("touchmove", (e) => {
-          e.preventDefault();
-          touches = Array.from(e.touches);
-          if (touches.length === 1 && isDragging) {
-            const deltaX = touches[0].clientX - previousMouse.x;
-            const deltaY = touches[0].clientY - previousMouse.y;
-            cameraRotation.theta -= deltaX * 0.01;
-            cameraRotation.phi = Math.max(
-              0.1,
-              Math.min(Math.PI - 0.1, cameraRotation.phi + deltaY * 0.01)
-            );
-            updateCameraPosition();
-            previousMouse = { x: touches[0].clientX, y: touches[0].clientY };
-          } else if (touches.length === 2) {
-            const dx = touches[0].clientX - touches[1].clientX;
-            const dy = touches[0].clientY - touches[1].clientY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (touchStartDistance > 0) {
-              const scale = distance / touchStartDistance;
-              cameraDistance = Math.max(
-                10,
-                Math.min(150, cameraDistance / scale)
-              );
-              updateCameraPosition();
-              touchStartDistance = distance;
-            }
-          }
-        });
-        renderer.domElement.addEventListener("touchend", () => {
-          isDragging = false;
-          touchStartDistance = 0;
-        });
-      }
-
-      // Update free camera movement
-      function updateFreeCamera(delta) {
-        if (cameraMode !== "free") return;
-        const speed = keys["shift"] ? moveSpeed * 3 : moveSpeed;
-        const forward = new THREE.Vector3();
-        const right = new THREE.Vector3();
-        // Get forward direction from camera
-        camera.getWorldDirection(forward);
-        forward.y = 0; // Keep movement horizontal
-        forward.normalize();
-        // Get right direction
-        right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
-        // Movement - fixed to be non-inverted
-        if (keys["w"] || keys["arrowup"]) {
-          velocity.addScaledVector(forward, speed);
-        }
-        if (keys["s"] || keys["arrowdown"]) {
-          velocity.addScaledVector(forward, -speed);
-        }
-        if (keys["a"] || keys["arrowleft"]) {
-          velocity.addScaledVector(right, -speed);
-        }
-        if (keys["d"] || keys["arrowright"]) {
-          velocity.addScaledVector(right, speed);
-        }
-        // Vertical movement
-        if (keys["q"]) velocity.y += speed;
-        if (keys["e"]) velocity.y -= speed;
-        // Apply velocity with damping
-        camera.position.add(velocity.clone().multiplyScalar(delta));
-        velocity.multiplyScalar(0.85);
-      }
-
-      // Window resize
-      function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      }
-
-      // Animation loop
-      let clock = new THREE.Clock();
-      let frameCount = 0;
-      function animate() {
-        requestAnimationFrame(animate);
-        const delta = clock.getDelta();
-        updateFreeCamera(delta);
-
-        // On mobile, update sprites less frequently
-        if (zoneLabelsGroup) {
-          if (!isMobile || frameCount % 2 === 0) {
-            zoneLabelsGroup.traverse((obj) => {
-              if (obj.type === "Sprite") {
-                obj.quaternion.copy(camera.quaternion);
-              }
-            });
-          }
-        }
-
-        frameCount++;
-        renderer.render(scene, camera);
-      }
-
-      // Initialize
-      function init() {
-        initScene();
-        setupLighting();
-        createRoom();
-        createCentralTable();
-        createSecondRing();
-        createOuterSeating(25);
-        setupControls();
-        setupKeyboardControls();
-        setupMouseControls();
-        setupTouchControls();
-        window.addEventListener("resize", onWindowResize, false);
-        animate();
-      }
-
-      // Start
-      init();
+      });
     </script>
   </body>
 </html>
