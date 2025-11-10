@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zone A - San Francisco | EMCA</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Professional Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary-navy: #1e293b;
+        --secondary-slate: #475569;
+        --accent-gold: #d4a574;
+        --warm-gray: #f8fafc;
+        --border-subtle: #e2e8f0;
+      }
+
+      * {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      .font-dari {
+        font-family: "Vazirmatn", "Noto Sans Arabic", sans-serif;
+      }
+
+      .font-pashto {
+        font-family: "Noto Sans Arabic", "Vazirmatn", sans-serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Navigation styles */
+      .nav-link {
+        position: relative;
+        font-weight: 500;
+        letter-spacing: 0.025em;
+        transition: color 0.3s ease;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent-gold);
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      /* Language selector */
+      .lang-select {
+        background: white;
+        border: 2px solid var(--border-subtle);
+        transition: all 0.3s ease;
+      }
+
+      .lang-select:hover {
+        border-color: var(--accent-gold);
+      }
+
+      /* RTL support */
+      [dir="rtl"] {
+        font-family: "Vazirmatn", "Noto Sans Arabic", sans-serif;
+      }
+
+      [dir="rtl"] .nav-link::after {
+        right: 0;
+        left: auto;
+      }
+
+      /* Member card styles */
+      .member-card {
+        background: white;
+        border: 1px solid var(--border-subtle);
+        transition: all 0.3s ease;
+      }
+
+      .member-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transform: translateY(-4px);
+      }
+
+      /* Event card styles */
+      .event-card {
+        border-left: 4px solid var(--accent-gold);
+        transition: all 0.3s ease;
+      }
+
+      .event-card:hover {
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      /* Zone hero gradient */
+      .zone-hero {
+        background: linear-gradient(
+          135deg,
+          #1e293b 0%,
+          #334155 50%,
+          #1e293b 100%
+        );
+      }
+
+      /* Pattern overlay */
+      .pattern-overlay {
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h50v50H0zM50 50h50v50H50z' fill='%23ffffff' fill-opacity='0.02'/%3E%3C/svg%3E");
+      }
+    </style>
+  </head>
+  <body class="bg-white text-slate-700">
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex justify-between items-center h-20">
+          <!-- Logo and Back Link -->
+          <div class="flex items-center space-x-6">
+            <a href="/" class="flex items-center space-x-4 group">
+              <i
+                class="fas fa-arrow-left text-slate-400 group-hover:text-slate-700 transition"
+              ></i>
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center"
+                >
+                  <span class="text-white font-bold text-lg">EMCA</span>
+                </div>
+                <div class="ml-4">
+                  <h1
+                    class="text-lg font-semibold text-slate-900 tracking-tight"
+                    data-en="Afghan American Engineers"
+                    data-dari="انجینران افغان امریکایی"
+                    data-pashto="افغان امریکایي انجینران"
+                  >
+                    Afghan American Engineers
+                  </h1>
+                  <p
+                    class="text-sm text-slate-500"
+                    data-en="California Chapter"
+                    data-dari="بخش کالیفورنیا"
+                    data-pashto="د کالیفورنیا څانګه"
+                  >
+                    California Chapter
+                  </p>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Desktop Navigation -->
+          <div class="hidden lg:flex items-center space-x-8">
+            <a
+              href="#overview"
+              class="nav-link text-slate-700 hover:text-slate-900"
+              data-en="Overview"
+              data-dari="بررسی کلی"
+              data-pashto="کتنه"
+              >Overview</a
+            >
+            <a
+              href="#leadership"
+              class="nav-link text-slate-700 hover:text-slate-900"
+              data-en="Leadership"
+              data-dari="رهبری"
+              data-pashto="مشرتابه"
+              >Leadership</a
+            >
+            <a
+              href="#events"
+              class="nav-link text-slate-700 hover:text-slate-900"
+              data-en="Events"
+              data-dari="رویدادها"
+              data-pashto="پیښې"
+              >Events</a
+            >
+            <a
+              href="#members"
+              class="nav-link text-slate-700 hover:text-slate-900"
+              data-en="Members"
+              data-dari="اعضا"
+              data-pashto="غړي"
+              >Members</a
+            >
+            <a
+              href="#contact"
+              class="nav-link text-slate-700 hover:text-slate-900"
+              data-en="Contact"
+              data-dari="تماس"
+              data-pashto="اړیکه"
+              >Contact</a
+            >
+          </div>
+
+          <!-- Language Selector -->
+          <div class="flex items-center space-x-3">
+            <select
+              onchange="changeLanguage(this.value)"
+              class="lang-select px-4 py-2 rounded-lg text-sm font-medium focus:outline-none"
+            >
+              <option value="en">English</option>
+              <option value="dari">دری</option>
+              <option value="pashto">پښتو</option>
+            </select>
+
+            <!-- Mobile Menu Button -->
+            <button
+              onclick="toggleMobileMenu()"
+              class="lg:hidden text-slate-700 p-2"
+            >
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div
+          id="mobileMenu"
+          class="hidden lg:hidden py-4 border-t border-gray-200"
+        >
+          <a
+            href="#overview"
+            class="block py-3 text-slate-700 font-medium"
+            data-en="Overview"
+            data-dari="بررسی کلی"
+            data-pashto="کتنه"
+            >Overview</a
+          >
+          <a
+            href="#leadership"
+            class="block py-3 text-slate-700 font-medium"
+            data-en="Leadership"
+            data-dari="رهبری"
+            data-pashto="مشرتابه"
+            >Leadership</a
+          >
+          <a
+            href="#events"
+            class="block py-3 text-slate-700 font-medium"
+            data-en="Events"
+            data-dari="رویدادها"
+            data-pashto="پیښې"
+            >Events</a
+          >
+          <a
+            href="#members"
+            class="block py-3 text-slate-700 font-medium"
+            data-en="Members"
+            data-dari="اعضا"
+            data-pashto="غړي"
+            >Members</a
+          >
+          <a
+            href="#contact"
+            class="block py-3 text-slate-700 font-medium"
+            data-en="Contact"
+            data-dari="تماس"
+            data-pashto="اړیکه"
+            >Contact</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Zone Hero Section -->
+    <section class="relative zone-hero text-white">
+      <div class="pattern-overlay absolute inset-0"></div>
+      <img
+        src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1920&h=500&fit=crop"
+        alt="San Francisco"
+        class="absolute inset-0 w-full h-full object-cover opacity-20"
+      />
+
+      <div class="relative z-10 max-w-7xl mx-auto px-6 py-24">
+        <div class="max-w-3xl">
+          <div class="mb-6">
+            <span
+              class="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium tracking-wide"
+            >
+              <span data-en="ZONE A" data-dari="منطقه A" data-pashto="زون A"
+                >ZONE A</span
+              >
+            </span>
+          </div>
+
+          <h1
+            class="text-5xl lg:text-6xl font-light mb-6 tracking-tight"
+            data-en="San Francisco Region"
+            data-dari="منطقه سان فرانسیسکو"
+            data-pashto="د سان فرانسسکو سیمه"
+          >
+            Region
+          </h1>
+
+          <p
+            class="text-xl text-gray-200 mb-8 leading-relaxed font-light"
+            data-en="Serving Afghan American engineers in San Francisco, Marin, and San Mateo counties"
+            data-dari="خدمت به انجینران افغان امریکایی در شهرستان‌های سان فرانسیسکو، مارین و سن ماتئو"
+            data-pashto="د سان فرانسسکو، مارین او سان ماټیو په کاونټیو کې افغان امریکایي انجینرانو ته خدمت"
+          >
+            Serving Afghan American engineers in Cities.
+          </p>
+
+          <div class="flex flex-wrap gap-8 text-sm">
+            <div class="flex items-center">
+              <i class="fas fa-users mr-3 text-amber-400"></i>
+              <span
+                data-en="85 Active Members"
+                data-dari="85 عضو فعال"
+                data-pashto="85 فعال غړي"
+                >85 Active Members</span
+              >
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-calendar mr-3 text-amber-400"></i>
+              <span
+                data-en="Monthly Meetings"
+                data-dari="جلسات ماهانه"
+                data-pashto="میاشتنۍ غونډې"
+                >Monthly Meetings</span
+              >
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-map-marker-alt mr-3 text-amber-400"></i>
+              <span
+                data-en="3 Counties Covered"
+                data-dari="3 شهرستان تحت پوشش"
+                data-pashto="3 کاونټۍ پوښل شوي"
+                >3 Counties Covered</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-4xl mx-auto">
+          <h2
+            class="text-3xl font-light text-slate-900 mb-8"
+            data-en="Zone Overview"
+            data-dari="بررسی کلی منطقه"
+            data-pashto="د زون کتنه"
+          >
+            Zone Overview
+          </h2>
+
+          <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+            <p
+              class="text-lg text-slate-600 leading-relaxed mb-6"
+              data-en="Zone A encompasses the San Francisco Bay Area's northern region, representing one of the most technologically advanced and diverse engineering communities in California. Our members work across various sectors including technology, civil infrastructure, biomedical engineering, and sustainable energy."
+              data-dari="منطقه A شامل منطقه شمالی خلیج سان فرانسیسکو است و یکی از پیشرفته‌ترین و متنوع‌ترین جوامع مهندسی در کالیفورنیا را نمایندگی می‌کند. اعضای ما در بخش‌های مختلف از جمله فناوری، زیرساخت‌های عمرانی، مهندسی پزشکی و انرژی پایدار کار می‌کنند."
+              data-pashto="زون A د سان فرانسسکو خلیج د شمالي سیمې برخه ده، چې د کالیفورنیا یو له خورا پرمختللو او متنوع انجینرۍ ټولنو څخه استازیتوب کوي. زموږ غړي په بیلابیلو سکتورونو کې کار کوي لکه ټکنالوژي، ملکي زیربنا، بایومیډیکل انجینري او دوامداره انرژي."
+            >
+              CITY NAME encompasses one of the key regions in California,
+              representing a diverse and highly skilled community of engineers
+              and professionals. Members here contribute across multiple
+              sectors, including technology, civil infrastructure, biomedical
+              innovation, sustainable energy, and advanced research. This city
+              fosters collaboration, professional growth, and a shared vision of
+              progress for both local and global Afghan communities.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6 mt-8">
+              <div class="text-center p-6 bg-gray-50 rounded-lg">
+                <div class="text-3xl font-light text-slate-900 mb-2">2005</div>
+                <p
+                  class="text-sm text-slate-600 uppercase tracking-wider"
+                  data-en="Established"
+                  data-dari="تاسیس"
+                  data-pashto="تاسیس"
+                >
+                  Established
+                </p>
+              </div>
+              <div class="text-center p-6 bg-gray-50 rounded-lg">
+                <div class="text-3xl font-light text-slate-900 mb-2">12</div>
+                <p
+                  class="text-sm text-slate-600 uppercase tracking-wider"
+                  data-en="Annual Events"
+                  data-dari="رویدادهای سالانه"
+                  data-pashto="کلني پیښې"
+                >
+                  Annual Events
+                </p>
+              </div>
+              <div class="text-center p-6 bg-gray-50 rounded-lg">
+                <div class="text-3xl font-light text-slate-900 mb-2">###</div>
+                <p
+                  class="text-sm text-slate-600 uppercase tracking-wider"
+                  data-en="Scholarships Awarded"
+                  data-dari="بورسیه‌های اعطا شده"
+                  data-pashto="ورکړل شوې بورسیې"
+                >
+                  ######
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leadership Section -->
+    <section id="leadership" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <h2
+          class="text-3xl font-light text-slate-900 mb-12 text-center"
+          data-en="Zone Leadership"
+          data-dari="رهبری منطقه"
+          data-pashto="د زون مشرتابه"
+        >
+          Zone Leadership
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <!-- Zone Director -->
+          <div class="text-center">
+            <div
+              class="w-32 h-32 bg-slate-200 rounded-full mx-auto mb-4 overflow-hidden"
+            >
+              <img
+                src="https://images.unsplash.com/photo-150700321169-0a1dd7228f2d?w=300&h=300&fit=crop"
+                alt="Director"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <h3 class="text-xl font-medium text-slate-900 mb-1">######</h3>
+            <p
+              class="text-slate-600 mb-2"
+              data-en="Zone Director"
+              data-dari="مدیر منطقه"
+              data-pashto="د زون مدیر"
+            >
+              Zone Director
+            </p>
+            <p class="text-sm text-slate-500">P.E., M.S. Civil Engineering</p>
+            <div class="mt-3">
+              <a
+                href="mailto:director.zonea@emca-ca.org"
+                class="text-amber-600 hover:text-amber-700"
+              >
+                <i class="fas fa-envelope"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Deputy Director -->
+          <div class="text-center">
+            <div
+              class="w-32 h-32 bg-slate-200 rounded-full mx-auto mb-4 overflow-hidden"
+            >
+              <img
+                src="https://images.unsplash.com/photo-157349635942-b8d87734a5a2?w=300&h=300&fit=crop"
+                alt="Deputy Director"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <h3 class="text-xl font-medium text-slate-900 mb-1">######</h3>
+            <p
+              class="text-slate-600 mb-2"
+              data-en="Deputy Director"
+              data-dari="معاون مدیر"
+              data-pashto="د مدیر مرستیال"
+            >
+              Deputy Director
+            </p>
+            <p class="text-sm text-slate-500">Ph.D. Electrical Engineering</p>
+            <div class="mt-3">
+              <a
+                href="mailto:deputy.zonea@emca-ca.org"
+                class="text-amber-600 hover:text-amber-700"
+              >
+                <i class="fas fa-envelope"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Secretary -->
+          <div class="text-center">
+            <div
+              class="w-32 h-32 bg-slate-200 rounded-full mx-auto mb-4 overflow-hidden"
+            >
+              <img
+                src="https://images.unsplash.com/photo-151908536753-af0119f7cbe7?w=300&h=300&fit=crop"
+                alt="Secretary"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <h3 class="text-xl font-medium text-slate-900 mb-1">######</h3>
+            <p
+              class="text-slate-600 mb-2"
+              data-en="Secretary"
+              data-dari="منشی"
+              data-pashto="منشي"
+            >
+              Secretary
+            </p>
+            <p class="text-sm text-slate-500">M.S. Software Engineering</p>
+            <div class="mt-3">
+              <a
+                href="mailto:secretary.zonea@emca-ca.org"
+                class="text-amber-600 hover:text-amber-700"
+              >
+                <i class="fas fa-envelope"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <h2
+          class="text-3xl font-light text-slate-900 mb-12 text-center"
+          data-en="Upcoming Events"
+          data-dari="رویدادهای آینده"
+          data-pashto="راتلونکې پیښې"
+        >
+          Upcoming Events
+        </h2>
+
+        <div class="max-w-4xl mx-auto space-y-4">
+          <!-- Event 1 -->
+          <div class="event-card bg-white rounded-lg p-6 shadow-sm">
+            <div
+              class="flex flex-col md:flex-row md:items-center md:justify-between"
+            >
+              <div class="mb-4 md:mb-0">
+                <div
+                  class="flex items-center text-amber-600 text-sm font-medium mb-2"
+                >
+                  <i class="fas fa-calendar mr-2"></i>
+                  <span>February 15, 2025</span>
+                </div>
+                <h3
+                  class="text-xl font-medium text-slate-900 mb-2"
+                  data-en="Technical Workshop: AI in Engineering"
+                  data-dari="کارگاه فنی: هوش مصنوعی در مهندسی"
+                  data-pashto="تخنیکي ورکشاپ: په انجینرۍ کې AI"
+                >
+                  Technical Workshop: AI in Engineering
+                </h3>
+                <p
+                  class="text-slate-600"
+                  data-en="Learn about latest AI applications in engineering fields"
+                  data-dari="درباره آخرین کاربردهای هوش مصنوعی در زمینه‌های مهندسی بیاموزید"
+                  data-pashto="په انجینرۍ برخو کې د AI وروستي کارونې زده کړئ"
+                >
+                  Learn about latest AI applications in engineering fields
+                </p>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div class="text-center">
+                  <i class="fas fa-clock text-slate-400 mb-1"></i>
+                  <p class="text-sm text-slate-600">6:00 PM</p>
+                </div>
+                <a
+                  href="#"
+                  class="px-6 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition"
+                >
+                  <span data-en="Register" data-dari="ثبت نام" data-pashto="ثبت"
+                    >Register</span
+                  >
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Event 2 -->
+          <div class="event-card bg-white rounded-lg p-6 shadow-sm">
+            <div
+              class="flex flex-col md:flex-row md:items-center md:justify-between"
+            >
+              <div class="mb-4 md:mb-0">
+                <div
+                  class="flex items-center text-amber-600 text-sm font-medium mb-2"
+                >
+                  <i class="fas fa-calendar mr-2"></i>
+                  <span>March 5, 2025</span>
+                </div>
+                <h3
+                  class="text-xl font-medium text-slate-900 mb-2"
+                  data-en="Monthly Networking Dinner"
+                  data-dari="شام شبکه‌سازی ماهانه"
+                  data-pashto="میاشتنۍ د شبکې ډوډۍ"
+                >
+                  Monthly Networking Dinner
+                </h3>
+                <p
+                  class="text-slate-600"
+                  data-en="Connect with fellow engineers over dinner and discussion"
+                  data-dari="با مهندسان همکار در شام و بحث ارتباط برقرار کنید"
+                  data-pashto="د ډوډۍ او بحث په اوږدو کې د ملګرو انجینرانو سره اړیکه ونیسئ"
+                >
+                  Connect with fellow engineers over dinner and discussion
+                </p>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div class="text-center">
+                  <i class="fas fa-clock text-slate-400 mb-1"></i>
+                  <p class="text-sm text-slate-600">7:00 PM</p>
+                </div>
+                <a
+                  href="#"
+                  class="px-6 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition"
+                >
+                  <span data-en="RSVP" data-dari="پاسخ" data-pashto="ځواب"
+                    >RSVP</span
+                  >
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Event 3 -->
+          <div class="event-card bg-white rounded-lg p-6 shadow-sm">
+            <div
+              class="flex flex-col md:flex-row md:items-center md:justify-between"
+            >
+              <div class="mb-4 md:mb-0">
+                <div
+                  class="flex items-center text-amber-600 text-sm font-medium mb-2"
+                >
+                  <i class="fas fa-calendar mr-2"></i>
+                  <span>March 20, 2025</span>
+                </div>
+                <h3
+                  class="text-xl font-medium text-slate-900 mb-2"
+                  data-en="Student Mentorship Program"
+                  data-dari="برنامه رهنمایی دانشجویان"
+                  data-pashto="د زده کوونکو د لارښوونې برنامه"
+                >
+                  Student Mentorship Program
+                </h3>
+                <p
+                  class="text-slate-600"
+                  data-en="Guide the next generation of Afghan American engineers"
+                  data-dari="نسل بعدی مهندسان افغان امریکایی را راهنمایی کنید"
+                  data-pashto="د افغان امریکایي انجینرانو راتلونکي نسل ته لارښوونه وکړئ"
+                >
+                  Guide the next generation of Afghan American engineers
+                </p>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div class="text-center">
+                  <i class="fas fa-clock text-slate-400 mb-1"></i>
+                  <p class="text-sm text-slate-600">2:00 PM</p>
+                </div>
+                <a
+                  href="#"
+                  class="px-6 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition"
+                >
+                  <span
+                    data-en="Join"
+                    data-dari="پیوستن"
+                    data-pashto="یوځای کیدل"
+                    >Join</span
+                  >
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Members Section -->
+    <section id="members" class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <h2
+          class="text-3xl font-light text-slate-900 mb-12 text-center"
+          data-en="Featured Members"
+          data-dari="اعضای برجسته"
+          data-pashto="ځانګړي غړي"
+        >
+          Featured Members
+        </h2>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Member Card 1 -->
+          <div class="member-card rounded-lg p-6">
+            <div class="w-24 h-24 bg-slate-200 rounded-full mx-auto mb-4"></div>
+            <h3 class="text-lg font-medium text-slate-900 text-center mb-1">
+              ######
+            </h3>
+            <p class="text-sm text-slate-600 text-center mb-2">
+              Senior Software Engineer
+            </p>
+            <p class="text-xs text-slate-500 text-center">
+              Google • 10 years experience
+            </p>
+          </div>
+
+          <!-- Member Card 2 -->
+          <div class="member-card rounded-lg p-6">
+            <div class="w-24 h-24 bg-slate-200 rounded-full mx-auto mb-4"></div>
+            <h3 class="text-lg font-medium text-slate-900 text-center mb-1">
+              ######
+            </h3>
+            <p class="text-sm text-slate-600 text-center mb-2">
+              Civil Engineer P.E.
+            </p>
+            <p class="text-xs text-slate-500 text-center">
+              CalTrans • 15 years experience
+            </p>
+          </div>
+
+          <!-- Member Card 3 -->
+          <div class="member-card rounded-lg p-6">
+            <div class="w-24 h-24 bg-slate-200 rounded-full mx-auto mb-4"></div>
+            <h3 class="text-lg font-medium text-slate-900 text-center mb-1">
+              ######
+            </h3>
+            <p class="text-sm text-slate-600 text-center mb-2">
+              Biomedical Engineer
+            </p>
+            <p class="text-xs text-slate-500 text-center">
+              UCSF • 8 years experience
+            </p>
+          </div>
+
+          <!-- Member Card 4 -->
+          <div class="member-card rounded-lg p-6">
+            <div class="w-24 h-24 bg-slate-200 rounded-full mx-auto mb-4"></div>
+            <h3 class="text-lg font-medium text-slate-900 text-center mb-1">
+              ######
+            </h3>
+            <p class="text-sm text-slate-600 text-center mb-2">
+              Mechanical Engineer
+            </p>
+            <p class="text-xs text-slate-500 text-center">
+              Tesla • 5 years experience
+            </p>
+          </div>
+        </div>
+
+        <div class="text-center mt-12">
+          <a
+            href="#"
+            class="inline-flex items-center text-amber-600 hover:text-amber-700 font-medium"
+          >
+            <span
+              data-en="View All Members Directory"
+              data-dari="مشاهده فهرست همه اعضا"
+              data-pashto="د ټولو غړو لارښود وګورئ"
+              >View All Members Directory</span
+            >
+            <i class="fas fa-arrow-right ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-4xl mx-auto">
+          <h2
+            class="text-3xl font-light text-slate-900 mb-8 text-center"
+            data-en="Zone Contact"
+            data-dari="تماس منطقه"
+            data-pashto="د زون اړیکه"
+          >
+            Zone Contact
+          </h2>
+
+          <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+              <div>
+                <h3
+                  class="font-medium text-slate-900 mb-4"
+                  data-en="Meeting Location"
+                  data-dari="محل جلسات"
+                  data-pashto="د غونډې ځای"
+                >
+                  Meeting Location
+                </h3>
+                <p class="text-slate-600">
+                  EMCA Community Center<br />
+                  123 Street<br />
+                  City, CA Zip Code
+                </p>
+              </div>
+              <div>
+                <h3
+                  class="font-medium text-slate-900 mb-4"
+                  data-en="Zone Office Hours"
+                  data-dari="ساعات اداری منطقه"
+                  data-pashto="د زون د دفتر ساعتونه"
+                >
+                  Zone Office Hours
+                </h3>
+                <p class="text-slate-600">
+                  <span
+                    data-en="First Saturday of each month"
+                    data-dari="اولین شنبه هر ماه"
+                    data-pashto="د هرې میاشتې لومړۍ شنبه"
+                    >First Saturday of each month</span
+                  ><br />
+                  10:00 AM - 2:00 PM<br />
+                  <span class="text-sm text-amber-600"
+                    >Virtual options available</span
+                  >
+                </p>
+              </div>
+            </div>
+
+            <div class="border-t border-gray-200 pt-8">
+              <div
+                class="flex flex-col md:flex-row md:items-center md:justify-between"
+              >
+                <div class="mb-4 md:mb-0">
+                  <h3
+                    class="font-medium text-slate-900 mb-2"
+                    data-en="Zone A Administration"
+                    data-dari="اداره منطقه A"
+                    data-pashto="د زون A اداره"
+                  >
+                    Zone A Administration
+                  </h3>
+                  <p class="text-slate-600">
+                    <i class="fas fa-envelope mr-2"></i> ###@###.##<br />
+                    <i class="fas fa-phone mr-2"></i> ###-###-####
+                  </p>
+                </div>
+                <div>
+                  <a
+                    href="/"
+                    class="inline-flex items-center px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition"
+                  >
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    <span
+                      data-en="Back to Main Site"
+                      data-dari="بازگشت به سایت اصلی"
+                      data-pashto="اصلي سایټ ته بیرته"
+                      >Back to Main Site</span
+                    >
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-gray-300 py-12">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+        <p class="mb-2">
+          &copy; 2025 EMCA - Afghan American Engineers California Chapter
+        </p>
+        <p
+          class="text-sm"
+          data-en="Zone A - San Francisco Region"
+          data-dari="منطقه A - منطقه سان فرانسیسکو"
+          data-pashto="زون A - د سان فرانسسکو سیمه"
+        >
+          Zone A - San Francisco Region
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Language functionality
+      let currentLang = "en";
+
+      function changeLanguage(lang) {
+        currentLang = lang;
+
+        // Update text direction and font
+        document.documentElement.dir =
+          lang === "dari" || lang === "pashto" ? "rtl" : "ltr";
+        document.documentElement.lang =
+          lang === "dari" ? "fa" : lang === "pashto" ? "ps" : "en";
+
+        // Update body font class
+        document.body.classList.remove("font-dari", "font-pashto");
+        if (lang === "dari") {
+          document.body.classList.add("font-dari");
+        } else if (lang === "pashto") {
+          document.body.classList.add("font-pashto");
+        }
+
+        // Update all translatable elements
+        const elements = document.querySelectorAll("[data-en]");
+        elements.forEach((el) => {
+          const translation = el.getAttribute(`data-${lang}`);
+          if (translation) {
+            el.textContent = translation;
+          }
+        });
+      }
+
+      // Mobile menu toggle
+      function toggleMobileMenu() {
+        const menu = document.getElementById("mobileMenu");
+        menu.classList.toggle("hidden");
+      }
+
+      // Smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+            document.getElementById("mobileMenu").classList.add("hidden");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
