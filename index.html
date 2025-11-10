@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EMCA - Afghan American Engineers in California</title>
+    <title>EMCA - Afghan American Engineers | California Chapter</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,640 +14,925 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
-    <!-- Google Fonts for better Dari/Farsi support -->
+    <!-- Professional Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      /* Custom styles for Dari/Farsi */
-      .font-dari {
-        font-family: "Vazirmatn", sans-serif;
+      :root {
+        --primary-navy: #1e293b;
+        --secondary-slate: #475569;
+        --accent-gold: #d4a574;
+        --warm-gray: #f8fafc;
+        --border-subtle: #e2e8f0;
       }
 
-      /* Smooth scroll */
+      * {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      .font-dari {
+        font-family: "Vazirmatn", "Noto Sans Arabic", sans-serif;
+      }
+
+      .font-pashto {
+        font-family: "Noto Sans Arabic", "Vazirmatn", sans-serif;
+      }
+
       html {
         scroll-behavior: smooth;
       }
 
-      /* Zone card hover effect */
+      /* Professional zone cards */
       .zone-card {
-        transition: all 0.3s ease;
-        border: 3px solid transparent;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid var(--border-subtle);
       }
 
       .zone-card:hover {
-        transform: translateY(-5px);
-        border-color: #047857;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
       }
 
-      /* Committee card style */
+      .zone-letter {
+        background: var(--primary-navy);
+        background-image: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      }
+
+      /* Committee cards with subtle elevation */
       .committee-card {
+        background: white;
+        border: 1px solid var(--border-subtle);
         transition: all 0.3s ease;
       }
 
       .committee-card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent-gold);
+      }
+
+      /* Navigation refinement */
+      .nav-link {
+        position: relative;
+        font-weight: 500;
+        letter-spacing: 0.025em;
+        transition: color 0.3s ease;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent-gold);
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      /* Language selector styling */
+      .lang-select {
+        background: white;
+        border: 2px solid var(--border-subtle);
+        transition: all 0.3s ease;
+      }
+
+      .lang-select:hover {
+        border-color: var(--accent-gold);
       }
 
       /* RTL support */
       [dir="rtl"] {
-        font-family: "Vazirmatn", sans-serif;
+        font-family: "Vazirmatn", "Noto Sans Arabic", sans-serif;
       }
 
-      /* Pattern overlay for hero */
+      [dir="rtl"] .nav-link::after {
+        right: 0;
+        left: auto;
+      }
+
+      /* Sophisticated button styling */
+      .btn-primary {
+        background: var(--primary-navy);
+        color: white;
+        padding: 14px 32px;
+        font-weight: 500;
+        letter-spacing: 0.025em;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .btn-primary:hover {
+        background: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--primary-navy);
+        padding: 14px 32px;
+        font-weight: 500;
+        letter-spacing: 0.025em;
+        border: 2px solid var(--primary-navy);
+        transition: all 0.3s ease;
+      }
+
+      .btn-secondary:hover {
+        background: var(--primary-navy);
+        color: white;
+      }
+
+      /* Professional hero gradient */
+      .hero-gradient {
+        background: linear-gradient(
+          135deg,
+          #1e293b 0%,
+          #334155 50%,
+          #1e293b 100%
+        );
+      }
+
+      /* Geometric pattern overlay */
       .pattern-overlay {
-        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h50v50H0zM50 50h50v50H50z' fill='%23ffffff' fill-opacity='0.02'/%3E%3C/svg%3E");
       }
 
-      /* Large click areas for better accessibility */
-      .large-click {
-        min-height: 48px;
-        min-width: 48px;
+      /* Section dividers */
+      .section-divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border-subtle),
+          transparent
+        );
+      }
+
+      /* Stat cards */
+      .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
     </style>
   </head>
-  <body class="bg-gray-50">
-    <!-- Language Toggle Button -->
-    <div class="fixed top-4 right-4 z-50">
-      <button
-        onclick="toggleLanguage()"
-        class="bg-emerald-700 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-emerald-800 transition-colors text-lg font-semibold large-click"
-      >
-        <i class="fas fa-language mr-2"></i>
-        <span id="langToggleText">دری</span>
-      </button>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="bg-white shadow-md sticky top-0 z-40">
-      <div class="container mx-auto px-4">
-        <div class="flex justify-between items-center py-4">
+  <body class="bg-white text-slate-700">
+    <!-- Professional Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex justify-between items-center h-20">
+          <!-- Logo and Organization Name -->
           <div class="flex items-center space-x-4">
-            <div
-              class="bg-emerald-700 text-white w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold"
-            >
-              امکا
-            </div>
-            <div>
-              <h1
-                class="text-xl font-bold text-gray-800"
-                data-en="Afghan American Engineers"
-                data-dari="انجنیران افغان-امرکایی "
+            <div class="flex items-center">
+              <div
+                class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center"
               >
-                Afghan American Engineers
-              </h1>
-              <p
-                class="text-sm text-gray-600"
-                data-en="California Chapter"
-                data-dari="بخش کالیفورنیا"
-              >
-                California Chapter
-              </p>
+                <span class="text-white font-bold text-lg">EMCA</span>
+              </div>
+              <div class="ml-4">
+                <h1
+                  class="text-lg font-semibold text-slate-900 tracking-tight"
+                  data-en="Afghan American Engineers"
+                  data-dari="انجینران افغان امریکایی"
+                  data-pashto="افغان امریکایي انجینران"
+                >
+                  Afghan American Engineers
+                </h1>
+                <p
+                  class="text-sm text-slate-500"
+                  data-en="California Chapter"
+                  data-dari="بخش کالیفورنیا"
+                  data-pashto="د کالیفورنیا څانګه"
+                >
+                  California Chapter
+                </p>
+              </div>
             </div>
           </div>
 
-          <!-- Simple Navigation Menu -->
-          <div class="hidden md:flex space-x-8">
+          <!-- Desktop Navigation -->
+          <div class="hidden lg:flex items-center space-x-8">
             <a
               href="#home"
-              class="text-gray-700 hover:text-emerald-700 font-medium text-lg large-click flex items-center"
+              class="nav-link text-slate-700 hover:text-slate-900"
               data-en="Home"
-              data-dari="خانه"
+              data-dari="صفحه اصلی"
+              data-pashto="کور پاڼه"
               >Home</a
             >
             <a
               href="#zones"
-              class="text-gray-700 hover:text-emerald-700 font-medium text-lg large-click flex items-center"
-              data-en="Zones"
-              data-dari="مناطق"
-              >Zones</a
+              class="nav-link text-slate-700 hover:text-slate-900"
+              data-en="Regional Zones"
+              data-dari="مناطق منطقوی"
+              data-pashto="سیمه ییز زونونه"
+              >Regional Zones</a
             >
             <a
               href="#committees"
-              class="text-gray-700 hover:text-emerald-700 font-medium text-lg large-click flex items-center"
+              class="nav-link text-slate-700 hover:text-slate-900"
               data-en="Committees"
               data-dari="کمیته ها"
+              data-pashto="کمیټې"
               >Committees</a
             >
             <a
               href="#conference"
-              class="text-gray-700 hover:text-emerald-700 font-medium text-lg large-click flex items-center"
-              data-en="Conference Room"
-              data-dari="اتاق کنفرانس"
-              >Conference Room</a
+              class="nav-link text-slate-700 hover:text-slate-900"
+              data-en="Conference Hall"
+              data-dari="تالار کنفرانس"
+              data-pashto="د کنفرانس تالار"
+              >Conference Hall</a
+            >
+            <a
+              href="#resources"
+              class="nav-link text-slate-700 hover:text-slate-900"
+              data-en="Resources"
+              data-dari="منابع"
+              data-pashto="سرچینې"
+              >Resources</a
             >
             <a
               href="#contact"
-              class="text-gray-700 hover:text-emerald-700 font-medium text-lg large-click flex items-center"
+              class="nav-link text-slate-700 hover:text-slate-900"
               data-en="Contact"
               data-dari="تماس"
+              data-pashto="اړیکه"
               >Contact</a
             >
           </div>
 
-          <!-- Mobile Menu Button -->
-          <button
-            onclick="toggleMobileMenu()"
-            class="md:hidden text-gray-700 text-2xl large-click"
-          >
-            <i class="fas fa-bars"></i>
-          </button>
+          <!-- Language Selector -->
+          <div class="flex items-center space-x-3">
+            <select
+              onchange="changeLanguage(this.value)"
+              class="lang-select px-4 py-2 rounded-lg text-sm font-medium focus:outline-none"
+            >
+              <option value="en">English</option>
+              <option value="dari">دری</option>
+              <option value="pashto">پښتو</option>
+              <option value="pashto">اوزبیکی</option>
+            </select>
+
+            <!-- Mobile Menu Button -->
+            <button
+              onclick="toggleMobileMenu()"
+              class="lg:hidden text-slate-700 p-2"
+            >
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="hidden md:hidden pb-4">
+        <div
+          id="mobileMenu"
+          class="hidden lg:hidden py-4 border-t border-gray-200"
+        >
           <a
             href="#home"
-            class="block py-3 text-gray-700 hover:text-emerald-700 font-medium text-lg"
+            class="block py-3 text-slate-700 font-medium"
             data-en="Home"
-            data-dari="خانه"
+            data-dari="صفحه اصلی"
+            data-pashto="کور پاڼه"
             >Home</a
           >
           <a
             href="#zones"
-            class="block py-3 text-gray-700 hover:text-emerald-700 font-medium text-lg"
-            data-en="Zones"
-            data-dari="مناطق"
-            >Zones</a
+            class="block py-3 text-slate-700 font-medium"
+            data-en="Regional Zones"
+            data-dari="مناطق منطقوی"
+            data-pashto="سیمه ییز زونونه"
+            >Regional Zones</a
           >
           <a
             href="#committees"
-            class="block py-3 text-gray-700 hover:text-emerald-700 font-medium text-lg"
+            class="block py-3 text-slate-700 font-medium"
             data-en="Committees"
             data-dari="کمیته ها"
+            data-pashto="کمیټې"
             >Committees</a
           >
           <a
             href="#conference"
-            class="block py-3 text-gray-700 hover:text-emerald-700 font-medium text-lg"
-            data-en="Conference Room"
-            data-dari="اتاق کنفرانس"
-            >Conference Room</a
+            class="block py-3 text-slate-700 font-medium"
+            data-en="Conference Hall"
+            data-dari="تالار کنفرانس"
+            data-pashto="د کنفرانس تالار"
+            >Conference Hall</a
+          >
+          <a
+            href="#resources"
+            class="block py-3 text-slate-700 font-medium"
+            data-en="Resources"
+            data-dari="منابع"
+            data-pashto="سرچینې"
+            >Resources</a
           >
           <a
             href="#contact"
-            class="block py-3 text-gray-700 hover:text-emerald-700 font-medium text-lg"
+            class="block py-3 text-slate-700 font-medium"
             data-en="Contact"
             data-dari="تماس"
+            data-pashto="اړیکه"
             >Contact</a
           >
         </div>
       </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section
-      id="home"
-      class="relative bg-emerald-700 text-white py-20 md:py-32 overflow-hidden"
-    >
+    <!-- Sophisticated Hero Section -->
+    <section id="home" class="relative hero-gradient text-white">
       <div class="pattern-overlay absolute inset-0"></div>
       <img
-        src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1920&h=600&fit=crop"
-        alt="Engineering team"
-        class="absolute inset-0 w-full h-full object-cover opacity-20"
+        src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=700&fit=crop"
+        alt="Modern Architecture"
+        class="absolute inset-0 w-full h-full object-cover opacity-10"
       />
 
-      <div class="container mx-auto px-4 relative z-10">
-        <div class="max-w-4xl mx-auto text-center">
-          <h2
-            class="text-4xl md:text-6xl font-bold mb-6"
-            data-en="Building Bridges, Creating Future"
-            data-dari="ساختن پل‌ها، ایجاد آینده"
+      <div class="relative z-10 max-w-7xl mx-auto px-6 py-32">
+        <div class="max-w-3xl">
+          <div class="mb-6">
+            <span
+              class="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium tracking-wide"
+            >
+              <span
+                data-en="EMCA • امکا"
+                data-dari="امکا • EMCA"
+                data-pashto="EMCA • امکا"
+                >EMCA • امکا</span
+              >
+            </span>
+          </div>
+
+          <h1
+            class="text-5xl lg:text-6xl font-light mb-6 tracking-tight leading-tight"
+            data-en="Engineering Excellence Through Unity"
+            data-dari="تعالی مهندسی از طریق وحدت"
+            data-pashto="د یووالي له لارې انجینرۍ بریالیتوب"
           >
-            Building Bridges, Creating Future
-          </h2>
+            Engineering Excellence<br />Through Unity
+          </h1>
+
           <p
-            class="text-xl md:text-2xl mb-8 opacity-95"
-            data-en="United Afghan American Engineers in California - Serving our community with excellence and dedication"
-            data-dari="انجینران متحد افغانستان در کالیفورنیا - خدمت به جامعه ما با تعالی و تعهد"
+            class="text-xl text-gray-200 mb-10 leading-relaxed font-light"
+            data-en="A professional network of Afghan American engineers advancing innovation, mentorship, and community development across California."
+            data-dari="شبکه حرفه‌ای انجینران افغان امریکایی که در پیشبرد نوآوری، رهنمایی و توسعه جامعه در سراسر کالیفورنیا فعالیت دارند."
+            data-pashto="د افغان امریکایي انجینرانو مسلکي شبکه چې د کالیفورنیا په اوږدو کې د نوښت، لارښوونې او ټولنې پراختیا ته وده ورکوي."
           >
-            United Afghan American Engineers in California - Serving our
-            community with excellence and dedication
+            A professional network of Afghan American engineers advancing
+            innovation, mentorship, and community development across California.
           </p>
 
-          <div class="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+          <div class="flex flex-wrap gap-4">
             <a
               href="#zones"
-              class="bg-white text-emerald-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors large-click inline-flex items-center justify-center"
+              class="btn-secondary rounded-lg inline-flex items-center bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white hover:text-slate-900"
             >
-              <i class="fas fa-map-marked-alt mr-3"></i>
-              <span data-en="Explore Zones" data-dari="کاوش مناطق"
-                >Explore Zones</span
+              <span
+                data-en="Explore Regions"
+                data-dari="کاوش مناطق"
+                data-pashto="سیمې وګورئ"
+                >Explore Regions</span
               >
+              <i class="fas fa-arrow-right ml-3"></i>
             </a>
             <a
-              href="#committees"
-              class="bg-emerald-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-emerald-500 transition-colors large-click inline-flex items-center justify-center"
+              href="#resources"
+              class="text-white/80 hover:text-white inline-flex items-center font-medium"
             >
-              <i class="fas fa-users mr-3"></i>
-              <span data-en="Our Committees" data-dari="کمیته های ما"
-                >Our Committees</span
+              <span
+                data-en="Member Resources"
+                data-dari="منابع اعضا"
+                data-pashto="د غړو سرچینې"
+                >Member Resources</span
               >
+              <i class="fas fa-chevron-right ml-2"></i>
             </a>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Welcome Message -->
-    <section class="py-16 bg-white">
-      <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center">
-          <div
-            class="bg-emerald-50 border-4 border-emerald-200 rounded-2xl p-8"
-          >
-            <i class="fas fa-hands-helping text-5xl text-emerald-700 mb-4"></i>
-            <h3
-              class="text-2xl font-bold text-gray-800 mb-4"
-              data-en="Welcome to EMCA Family"
-              data-dari="به خانواده EMCA خوش آمدید"
-            >
-              Welcome to EMCA Family
-            </h3>
-            <p
-              class="text-lg text-gray-700 leading-relaxed"
-              data-en="We are proud Afghan engineers building our future together in California. Join us in our mission to serve, support, and strengthen our community through professional excellence and cultural unity."
-              data-dari="ما مهندسان افغان مفتخر هستیم که آینده خود را در کالیفورنیا با هم می سازیم. به ما در ماموریت ما برای خدمت، حمایت و تقویت جامعه ما از طریق تعالی حرفه ای و وحدت فرهنگی بپیوندید."
-            >
-              We are proud Afghan engineers building our future together in
-              California. Join us in our mission to serve, support, and
-              strengthen our community through professional excellence and
-              cultural unity.
-            </p>
+      <!-- Professional Stats Bar -->
+      <div
+        class="relative z-10 bg-slate-900/50 backdrop-blur-md border-t border-white/10"
+      >
+        <div class="max-w-7xl mx-auto px-6 py-8">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="stat-card rounded-lg p-4">
+              <div class="text-3xl font-light text-white mb-1">300+</div>
+              <p
+                class="text-sm text-gray-300 uppercase tracking-wider"
+                data-en="Professional Members"
+                data-dari="اعضای حرفه‌ای"
+                data-pashto="مسلکي غړي"
+              >
+                Professional Members
+              </p>
+            </div>
+            <div class="stat-card rounded-lg p-4">
+              <div class="text-3xl font-light text-white mb-1">10</div>
+              <p
+                class="text-sm text-gray-300 uppercase tracking-wider"
+                data-en="Regional Chapters"
+                data-dari="فصول منطقه‌ای"
+                data-pashto="سیمه ییز څپرکي"
+              >
+                Regional Chapters
+              </p>
+            </div>
+            <div class="stat-card rounded-lg p-4">
+              <div class="text-3xl font-light text-white mb-1">7</div>
+              <p
+                class="text-sm text-gray-300 uppercase tracking-wider"
+                data-en="Specialized Committees"
+                data-dari="کمیته‌های تخصصی"
+                data-pashto="تخصصي کمیټې"
+              >
+                Specialized Committees
+              </p>
+            </div>
+            <div class="stat-card rounded-lg p-4">
+              <div class="text-3xl font-light text-white mb-1">25+</div>
+              <p
+                class="text-sm text-gray-300 uppercase tracking-wider"
+                data-en="Years of Service"
+                data-dari="سال خدمت"
+                data-pashto="د خدمت کلونه"
+              >
+                Years of Service
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Zones Section -->
-    <section id="zones" class="py-20 bg-gray-50">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
+    <!-- Mission Statement -->
+    <section class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-4xl mx-auto text-center">
           <h2
-            class="text-4xl font-bold text-gray-800 mb-4"
-            data-en="Our Regional Zones"
-            data-dari="مناطق منطقه ای ما"
+            class="text-3xl font-light text-slate-900 mb-8"
+            data-en="Our Mission"
+            data-dari="ماموریت ما"
+            data-pashto="زموږ ماموریت"
           >
-            Our Regional Zones
+            Our Mission
           </h2>
           <p
-            class="text-xl text-gray-600"
-            data-en="Select your zone to connect with local members and activities"
-            data-dari="منطقه خود را برای ارتباط با اعضا و فعالیت های محلی انتخاب کنید"
+            class="text-lg text-slate-600 leading-relaxed"
+            data-en="To foster professional growth, cultural preservation, and community service among Afghan American engineers while promoting excellence in engineering practices and contributing to California's technological advancement."
+            data-dari="پرورش رشد حرفه‌ای، حفظ فرهنگی و خدمات اجتماعی در میان انجینران افغان امریکایی، ترویج تعالی در عملکردهای مهندسی و کمک به پیشرفت تکنولوژیک کالیفورنیا."
+            data-pashto="د افغان امریکایي انجینرانو په منځ کې د مسلکي ودې، کلتوري ساتنې او ټولنیزو خدماتو هڅول، په انجینرۍ کې د بریالیتوب ترویج او د کالیفورنیا تخنیکي پرمختګ ته مرسته."
           >
-            Select your zone to connect with local members and activities
+            To foster professional growth, cultural preservation, and community
+            service among Afghan American engineers while promoting excellence
+            in engineering practices and contributing to California's
+            technological advancement.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Regional Zones Section -->
+    <section id="zones" class="py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2
+            class="text-4xl font-light text-slate-900 mb-4"
+            data-en="Regional Zones"
+            data-dari="مناطق منطقوی"
+            data-pashto="سیمه ییز زونونه"
+          >
+            Regional Zones
+          </h2>
+          <p
+            class="text-lg text-slate-600"
+            data-en="Connect with your local chapter"
+            data-dari="با بخش محلی خود ارتباط برقرار کنید"
+            data-pashto="د خپلې محلي څانګې سره اړیکه ونیسئ"
+          >
+            Connect with your local chapter
           </p>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          <!-- Zone Cards -->
+          <!-- Zone Cards with Professional Design -->
           <a
             href="/zone-a.html"
-            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+            class="zone-card rounded-xl p-6 text-center group cursor-pointer"
           >
             <div
-              class="bg-emerald-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              class="zone-letter w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 text-white"
             >
-              <span class="text-3xl font-bold text-emerald-700">A</span>
+              <span class="text-2xl font-light">A</span>
             </div>
             <h3
-              class="text-xl font-semibold text-gray-800 mb-2"
+              class="text-lg font-medium text-slate-900 mb-1"
               data-en="Zone A"
               data-dari="منطقه A"
+              data-pashto="زون A"
             >
               Zone A
             </h3>
             <p
-              class="text-gray-600"
+              class="text-sm text-slate-500"
               data-en="San Francisco"
               data-dari="سان فرانسیسکو"
+              data-pashto="سان فرانسسکو"
             >
-              San Francisco
+              Yuba
             </p>
-            <div class="mt-4 text-emerald-700">
-              <i class="fas fa-arrow-right text-xl"></i>
+            <div
+              class="mt-3 text-slate-400 group-hover:text-amber-600 transition-colors"
+            >
+              <i class="fas fa-arrow-right"></i>
             </div>
           </a>
 
           <a
             href="/zone-b.html"
-            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+            class="zone-card rounded-xl p-6 text-center group cursor-pointer"
           >
             <div
-              class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              class="zone-letter w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 text-white"
             >
-              <span class="text-3xl font-bold text-blue-700">B</span>
+              <span class="text-2xl font-light">B</span>
             </div>
             <h3
-              class="text-xl font-semibold text-gray-800 mb-2"
+              class="text-lg font-medium text-slate-900 mb-1"
               data-en="Zone B"
               data-dari="منطقه B"
+              data-pashto="زون B"
             >
               Zone B
             </h3>
-            <p class="text-gray-600" data-en="Los Angeles" data-dari="لس آنجلس">
-              Los Angeles
+            <p
+              class="text-sm text-slate-500"
+              data-en="Los Angeles"
+              data-dari="لس آنجلس"
+              data-pashto="لاس انجلس"
+            >
+              Roseville
             </p>
-            <div class="mt-4 text-blue-700">
-              <i class="fas fa-arrow-right text-xl"></i>
+            <div
+              class="mt-3 text-slate-400 group-hover:text-amber-600 transition-colors"
+            >
+              <i class="fas fa-arrow-right"></i>
             </div>
           </a>
 
           <a
             href="/zone-c.html"
-            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+            class="zone-card rounded-xl p-6 text-center group cursor-pointer"
           >
             <div
-              class="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              class="zone-letter w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 text-white"
             >
-              <span class="text-3xl font-bold text-purple-700">C</span>
+              <span class="text-2xl font-light">C</span>
             </div>
             <h3
-              class="text-xl font-semibold text-gray-800 mb-2"
+              class="text-lg font-medium text-slate-900 mb-1"
               data-en="Zone C"
               data-dari="منطقه C"
+              data-pashto="زون C"
             >
               Zone C
             </h3>
-            <p class="text-gray-600" data-en="San Diego" data-dari="سن دیگو">
-              San Diego
+            <p
+              class="text-sm text-slate-500"
+              data-en="San Diego"
+              data-dari="سن دیگو"
+              data-pashto="سان ډیګو"
+            >
+              Rancho Cordova
             </p>
-            <div class="mt-4 text-purple-700">
-              <i class="fas fa-arrow-right text-xl"></i>
+            <div
+              class="mt-3 text-slate-400 group-hover:text-amber-600 transition-colors"
+            >
+              <i class="fas fa-arrow-right"></i>
             </div>
           </a>
 
           <a
             href="/zone-d.html"
-            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+            class="zone-card rounded-xl p-6 text-center group cursor-pointer"
           >
             <div
-              class="bg-orange-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              class="zone-letter w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 text-white"
             >
-              <span class="text-3xl font-bold text-orange-700">D</span>
+              <span class="text-2xl font-light">D</span>
             </div>
             <h3
-              class="text-xl font-semibold text-gray-800 mb-2"
+              class="text-lg font-medium text-slate-900 mb-1"
               data-en="Zone D"
               data-dari="منطقه D"
+              data-pashto="زون D"
             >
               Zone D
             </h3>
-            <p class="text-gray-600" data-en="Sacramento" data-dari="ساکرامنتو">
+            <p
+              class="text-sm text-slate-500"
+              data-en="Sacramento"
+              data-dari="ساکرامنتو"
+              data-pashto="ساکرامنټو"
+            >
               Sacramento
             </p>
-            <div class="mt-4 text-orange-700">
-              <i class="fas fa-arrow-right text-xl"></i>
+            <div
+              class="mt-3 text-slate-400 group-hover:text-amber-600 transition-colors"
+            >
+              <i class="fas fa-arrow-right"></i>
             </div>
           </a>
 
           <a
             href="/zone-e.html"
-            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+            class="zone-card rounded-xl p-6 text-center group cursor-pointer"
           >
             <div
-              class="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              class="zone-letter w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 text-white"
             >
-              <span class="text-3xl font-bold text-red-700">E</span>
+              <span class="text-2xl font-light">E</span>
             </div>
             <h3
-              class="text-xl font-semibold text-gray-800 mb-2"
+              class="text-lg font-medium text-slate-900 mb-1"
               data-en="Zone E"
               data-dari="منطقه E"
+              data-pashto="زون E"
             >
               Zone E
             </h3>
-            <p class="text-gray-600" data-en="San Jose" data-dari="سن خوزه">
-              San Jose
+            <p
+              class="text-sm text-slate-500"
+              data-en="San Jose"
+              data-dari="سن خوزه"
+              data-pashto="سان جوزي"
+            >
+              Elk Grove
             </p>
-            <div class="mt-4 text-red-700">
-              <i class="fas fa-arrow-right text-xl"></i>
+            <div
+              class="mt-3 text-slate-400 group-hover:text-amber-600 transition-colors"
+            >
+              <i class="fas fa-arrow-right"></i>
             </div>
           </a>
 
           <a
             href="/zone-f.html"
-            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+            class="zone-card rounded-xl p-6 text-center group cursor-pointer"
           >
             <div
-              class="bg-teal-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              class="zone-letter w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 text-white"
             >
-              <span class="text-3xl font-bold text-teal-700">F</span>
+              <span class="text-2xl font-light">F</span>
             </div>
             <h3
-              class="text-xl font-semibold text-gray-800 mb-2"
+              class="text-lg font-medium text-slate-900 mb-1"
               data-en="Zone F"
               data-dari="منطقه F"
+              data-pashto="زون F"
             >
               Zone F
             </h3>
-            <p class="text-gray-600" data-en="Fresno" data-dari="فرزنو">
-              Fresno
+            <p
+              class="text-sm text-slate-500"
+              data-en="Fresno"
+              data-dari="فرزنو"
+              data-pashto="فریسنو"
+            >
+              Fairfield
             </p>
-            <div class="mt-4 text-teal-700">
-              <i class="fas fa-arrow-right text-xl"></i>
+            <div
+              class="mt-3 text-slate-400 group-hover:text-amber-600 transition-colors"
+            >
+              <i class="fas fa-arrow-right"></i>
             </div>
           </a>
 
           <a
             href="/zone-g.html"
-            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+            class="zone-card rounded-xl p-6 text-center group cursor-pointer"
           >
             <div
-              class="bg-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              class="zone-letter w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 text-white"
             >
-              <span class="text-3xl font-bold text-indigo-700">G</span>
+              <span class="text-2xl font-light">G</span>
             </div>
             <h3
-              class="text-xl font-semibold text-gray-800 mb-2"
+              class="text-lg font-medium text-slate-900 mb-1"
               data-en="Zone G"
               data-dari="منطقه G"
+              data-pashto="زون G"
             >
               Zone G
             </h3>
-            <p class="text-gray-600" data-en="Oakland" data-dari="اوکلند">
-              Oakland
+            <p
+              class="text-sm text-slate-500"
+              data-en="Oakland"
+              data-dari="اوکلند"
+              data-pashto="اوکلنډ"
+            >
+              Hayward
             </p>
-            <div class="mt-4 text-indigo-700">
-              <i class="fas fa-arrow-right text-xl"></i>
+            <div
+              class="mt-3 text-slate-400 group-hover:text-amber-600 transition-colors"
+            >
+              <i class="fas fa-arrow-right"></i>
             </div>
           </a>
 
           <a
             href="/zone-h.html"
-            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+            class="zone-card rounded-xl p-6 text-center group cursor-pointer"
           >
             <div
-              class="bg-pink-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              class="zone-letter w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 text-white"
             >
-              <span class="text-3xl font-bold text-pink-700">H</span>
+              <span class="text-2xl font-light">H</span>
             </div>
             <h3
-              class="text-xl font-semibold text-gray-800 mb-2"
+              class="text-lg font-medium text-slate-900 mb-1"
               data-en="Zone H"
               data-dari="منطقه H"
+              data-pashto="زون H"
             >
               Zone H
             </h3>
-            <p class="text-gray-600" data-en="Riverside" data-dari="ریورساید">
-              Riverside
+            <p
+              class="text-sm text-slate-500"
+              data-en="Riverside"
+              data-dari="ریورساید"
+              data-pashto="ریورسایډ"
+            >
+              San Francisco
             </p>
-            <div class="mt-4 text-pink-700">
-              <i class="fas fa-arrow-right text-xl"></i>
+            <div
+              class="mt-3 text-slate-400 group-hover:text-amber-600 transition-colors"
+            >
+              <i class="fas fa-arrow-right"></i>
             </div>
           </a>
 
           <a
             href="/zone-i.html"
-            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+            class="zone-card rounded-xl p-6 text-center group cursor-pointer"
           >
             <div
-              class="bg-yellow-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              class="zone-letter w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 text-white"
             >
-              <span class="text-3xl font-bold text-yellow-700">I</span>
+              <span class="text-2xl font-light">I</span>
             </div>
             <h3
-              class="text-xl font-semibold text-gray-800 mb-2"
+              class="text-lg font-medium text-slate-900 mb-1"
               data-en="Zone I"
               data-dari="منطقه I"
+              data-pashto="زون I"
             >
               Zone I
             </h3>
-            <p class="text-gray-600" data-en="Long Beach" data-dari="لانگ بیچ">
-              Long Beach
+            <p
+              class="text-sm text-slate-500"
+              data-en="Long Beach"
+              data-dari="لانگ بیچ"
+              data-pashto="لانګ بیچ"
+            >
+              Modesto
             </p>
-            <div class="mt-4 text-yellow-700">
-              <i class="fas fa-arrow-right text-xl"></i>
+            <div
+              class="mt-3 text-slate-400 group-hover:text-amber-600 transition-colors"
+            >
+              <i class="fas fa-arrow-right"></i>
             </div>
           </a>
 
           <a
             href="/zone-j.html"
-            class="zone-card bg-white rounded-xl p-8 text-center hover:cursor-pointer shadow-lg"
+            class="zone-card rounded-xl p-6 text-center group cursor-pointer"
           >
             <div
-              class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+              class="zone-letter w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 text-white"
             >
-              <span class="text-3xl font-bold text-green-700">J</span>
+              <span class="text-2xl font-light">J</span>
             </div>
             <h3
-              class="text-xl font-semibold text-gray-800 mb-2"
+              class="text-lg font-medium text-slate-900 mb-1"
               data-en="Zone J"
               data-dari="منطقه J"
+              data-pashto="زون J"
             >
               Zone J
             </h3>
-            <p class="text-gray-600" data-en="Anaheim" data-dari="آناهایم">
-              Anaheim
+            <p
+              class="text-sm text-slate-500"
+              data-en="Anaheim"
+              data-dari="آناهایم"
+              data-pashto="اناهیم"
+            >
+              Los Angeles
             </p>
-            <div class="mt-4 text-green-700">
-              <i class="fas fa-arrow-right text-xl"></i>
+            <div
+              class="mt-3 text-slate-400 group-hover:text-amber-600 transition-colors"
+            >
+              <i class="fas fa-arrow-right"></i>
             </div>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- 3D Conference Room Section -->
+    <!-- 3D Conference Hall Section -->
     <section
       id="conference"
-      class="py-20 bg-emerald-800 text-white relative overflow-hidden"
+      class="py-24 bg-slate-900 text-white relative overflow-hidden"
     >
-      <div class="absolute inset-0 opacity-10">
-        <img
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&h=600&fit=crop"
-          alt="Modern office"
-          class="w-full h-full object-cover"
-        />
-      </div>
+      <div class="pattern-overlay absolute inset-0 opacity-5"></div>
 
-      <div class="container mx-auto px-4 relative z-10">
+      <div class="relative z-10 max-w-7xl mx-auto px-6">
         <div class="text-center mb-12">
           <h2
-            class="text-4xl font-bold mb-4"
-            data-en="Virtual Conference Room"
-            data-dari="اتاق کنفرانس مجازی"
+            class="text-4xl font-light mb-4"
+            data-en="Conference Facilities"
+            data-dari="امکانات کنفرانس"
+            data-pashto="د کنفرانس اسانتیاوې"
           >
-            Virtual Conference Room
+            Conference Facilities
           </h2>
           <p
-            class="text-xl opacity-95 mb-8"
-            data-en="Experience our state-of-the-art 3D conference facility"
-            data-dari="تجربه امکانات کنفرانس سه بعدی پیشرفته ما"
+            class="text-lg text-gray-300"
+            data-en="State-of-the-art venue for professional gatherings"
+            data-dari="مکان پیشرفته برای گردهمایی‌های حرفه‌ای"
+            data-pashto="د مسلکي غونډو لپاره عصري ځای"
           >
-            Experience our state-of-the-art 3D conference facility
+            State-of-the-art venue for professional gatherings
           </p>
         </div>
 
-        <div class="max-w-6xl mx-auto">
-          <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
-            <!-- 3D Model Container -->
-            <div class="relative" style="height: 600px">
-              <iframe
-                src="model.html"
-                class="w-full h-full border-0"
-                title="3D Conference Room Model"
-              >
-              </iframe>
-            </div>
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <!-- 3D Model Container -->
+          <div class="relative bg-gray-100" style="height: 600px">
+            <iframe
+              src="model.html"
+              class="w-full h-full border-0"
+              title="3D Conference Hall Model"
+            >
+            </iframe>
+          </div>
 
-            <div class="p-8 bg-gray-50">
-              <div class="grid md:grid-cols-3 gap-6 text-gray-800">
-                <div class="text-center">
-                  <i class="fas fa-users text-4xl text-emerald-700 mb-3"></i>
-                  <h4
-                    class="font-semibold text-lg mb-2"
-                    data-en="Capacity: 500+"
-                    data-dari="ظرفیت: 500+"
-                  >
-                    Capacity: 500+
-                  </h4>
-                  <p
-                    class="text-gray-600"
-                    data-en="Modern seating arrangement"
-                    data-dari="ترتیب صندلی مدرن"
-                  >
-                    Modern seating arrangement
-                  </p>
-                </div>
-                <div class="text-center">
-                  <i class="fas fa-video text-4xl text-emerald-700 mb-3"></i>
-                  <h4
-                    class="font-semibold text-lg mb-2"
-                    data-en="HD Video Conferencing"
-                    data-dari="ویدیو کنفرانس HD"
-                  >
-                    HD Video Conferencing
-                  </h4>
-                  <p
-                    class="text-gray-600"
-                    data-en="Connect globally"
-                    data-dari="اتصال جهانی"
-                  >
-                    Connect globally
-                  </p>
-                </div>
-                <div class="text-center">
-                  <i class="fas fa-wifi text-4xl text-emerald-700 mb-3"></i>
-                  <h4
-                    class="font-semibold text-lg mb-2"
-                    data-en="Smart Technology"
-                    data-dari="فناوری هوشمند"
-                  >
-                    Smart Technology
-                  </h4>
-                  <p
-                    class="text-gray-600"
-                    data-en="Fully equipped facilities"
-                    data-dari="امکانات کاملا مجهز"
-                  >
-                    Fully equipped facilities
-                  </p>
-                </div>
+          <div class="p-8">
+            <div class="grid md:grid-cols-4 gap-6 text-slate-700">
+              <div class="text-center">
+                <div class="text-3xl font-light text-slate-900 mb-2">500+</div>
+                <p
+                  class="text-sm text-slate-600 uppercase tracking-wider"
+                  data-en="Seating Capacity"
+                  data-dari="ظرفیت نشستن"
+                  data-pashto="د ناستې ظرفیت"
+                >
+                  Seating Capacity
+                </p>
+              </div>
+              <div class="text-center">
+                <div class="text-3xl font-light text-slate-900 mb-2">4K</div>
+                <p
+                  class="text-sm text-slate-600 uppercase tracking-wider"
+                  data-en="Display Systems"
+                  data-dari="سیستم‌های نمایش"
+                  data-pashto="د ښودلو سیسټمونه"
+                >
+                  Display Systems
+                </p>
+              </div>
+              <div class="text-center">
+                <div class="text-3xl font-light text-slate-900 mb-2">HD</div>
+                <p
+                  class="text-sm text-slate-600 uppercase tracking-wider"
+                  data-en="Video Conference"
+                  data-dari="ویدیو کنفرانس"
+                  data-pashto="ویډیو کنفرانس"
+                >
+                  Video Conference
+                </p>
+              </div>
+              <div class="text-center">
+                <div class="text-3xl font-light text-slate-900 mb-2">24/7</div>
+                <p
+                  class="text-sm text-slate-600 uppercase tracking-wider"
+                  data-en="Availability"
+                  data-dari="دسترسی"
+                  data-pashto="شتون"
+                >
+                  Availability
+                </p>
               </div>
             </div>
           </div>
@@ -656,566 +941,602 @@
     </section>
 
     <!-- Committees Section -->
-    <section id="committees" class="py-20 bg-white">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
+    <section id="committees" class="py-24 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
           <h2
-            class="text-4xl font-bold text-gray-800 mb-4"
-            data-en="Our Committees"
-            data-dari="کمیته های ما"
+            class="text-4xl font-light text-slate-900 mb-4"
+            data-en="Specialized Committees"
+            data-dari="کمیته‌های تخصصی"
+            data-pashto="تخصصي کمیټې"
           >
-            Our Committees
+            Specialized Committees
           </h2>
           <p
-            class="text-xl text-gray-600"
-            data-en="Specialized teams working for community excellence"
-            data-dari="تیم های تخصصی که برای تعالی جامعه کار می کنند"
+            class="text-lg text-slate-600"
+            data-en="Dedicated teams driving organizational excellence"
+            data-dari="تیم‌های اختصاصی که تعالی سازمانی را پیش می‌برند"
+            data-pashto="وقف شوي ټیمونه چې د سازمان بریالیتوب پرمخ بیایي"
           >
-            Specialized teams working for community excellence
+            Dedicated teams driving organizational excellence
           </p>
         </div>
 
-        <div
-          class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto"
-        >
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <!-- Committee Cards -->
-          <div
-            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-emerald-700"
-          >
-            <div class="text-emerald-700 mb-4">
-              <i class="fas fa-briefcase text-5xl"></i>
+          <div class="committee-card rounded-xl p-8">
+            <div
+              class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mb-5"
+            >
+              <i class="fas fa-building text-xl text-slate-700"></i>
             </div>
             <h3
-              class="text-2xl font-bold text-gray-800 mb-3"
+              class="text-xl font-medium text-slate-900 mb-3"
               data-en="Administration"
               data-dari="اداره"
+              data-pashto="اداره"
             >
               Administration
             </h3>
             <p
-              class="text-gray-600 mb-4"
-              data-en="Managing operations and organizational structure"
-              data-dari="مدیریت عملیات و ساختار سازمانی"
+              class="text-slate-600 mb-4 text-sm leading-relaxed"
+              data-en="Organizational governance and strategic planning"
+              data-dari="حکومتداری سازمانی و برنامه‌ریزی استراتژیک"
+              data-pashto="د سازمان حکومتولي او ستراتیژیک پلان جوړونه"
             >
-              Managing operations and organizational structure
+              Organizational governance and strategic planning
             </p>
             <a
               href="/committee-admin.html"
-              class="text-emerald-700 font-semibold hover:text-emerald-800 inline-flex items-center"
+              class="text-amber-600 font-medium text-sm hover:text-amber-700 inline-flex items-center group"
             >
-              <span data-en="Learn More" data-dari="بیشتر بدانید"
-                >Learn More</span
+              <span data-en="Details" data-dari="جزئیات" data-pashto="تفصیلات"
+                >Details</span
               >
-              <i class="fas fa-arrow-right ml-2"></i>
+              <i
+                class="fas fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"
+              ></i>
             </a>
           </div>
 
-          <div
-            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-blue-700"
-          >
-            <div class="text-blue-700 mb-4">
-              <i class="fas fa-chart-line text-5xl"></i>
+          <div class="committee-card rounded-xl p-8">
+            <div
+              class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mb-5"
+            >
+              <i class="fas fa-chart-line text-xl text-slate-700"></i>
             </div>
             <h3
-              class="text-2xl font-bold text-gray-800 mb-3"
+              class="text-xl font-medium text-slate-900 mb-3"
               data-en="Finance"
               data-dari="امور مالی"
+              data-pashto="مالي چارې"
             >
               Finance
             </h3>
             <p
-              class="text-gray-600 mb-4"
-              data-en="Financial planning and resource management"
-              data-dari="برنامه ریزی مالی و مدیریت منابع"
+              class="text-slate-600 mb-4 text-sm leading-relaxed"
+              data-en="Financial stewardship and resource allocation"
+              data-dari="مدیریت مالی و تخصیص منابع"
+              data-pashto="مالي څارنه او د سرچینو ویش"
             >
-              Financial planning and resource management
+              Financial stewardship and resource allocation
             </p>
             <a
               href="/committee-finance.html"
-              class="text-blue-700 font-semibold hover:text-blue-800 inline-flex items-center"
+              class="text-amber-600 font-medium text-sm hover:text-amber-700 inline-flex items-center group"
             >
-              <span data-en="Learn More" data-dari="بیشتر بدانید"
-                >Learn More</span
+              <span data-en="Details" data-dari="جزئیات" data-pashto="تفصیلات"
+                >Details</span
               >
-              <i class="fas fa-arrow-right ml-2"></i>
+              <i
+                class="fas fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"
+              ></i>
             </a>
           </div>
 
-          <div
-            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-purple-700"
-          >
-            <div class="text-purple-700 mb-4">
-              <i class="fas fa-heart text-5xl"></i>
+          <div class="committee-card rounded-xl p-8">
+            <div
+              class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mb-5"
+            >
+              <i class="fas fa-users text-xl text-slate-700"></i>
             </div>
             <h3
-              class="text-2xl font-bold text-gray-800 mb-3"
+              class="text-xl font-medium text-slate-900 mb-3"
               data-en="Social"
               data-dari="اجتماعی"
+              data-pashto="ټولنیز"
             >
               Social
             </h3>
             <p
-              class="text-gray-600 mb-4"
-              data-en="Community events and member engagement"
-              data-dari="رویدادهای اجتماعی و مشارکت اعضا"
+              class="text-slate-600 mb-4 text-sm leading-relaxed"
+              data-en="Community engagement and cultural events"
+              data-dari="مشارکت اجتماعی و رویدادهای فرهنگی"
+              data-pashto="د ټولنې ګډون او کلتوري پیښې"
             >
-              Community events and member engagement
+              Community engagement and cultural events
             </p>
             <a
               href="/committee-social.html"
-              class="text-purple-700 font-semibold hover:text-purple-800 inline-flex items-center"
+              class="text-amber-600 font-medium text-sm hover:text-amber-700 inline-flex items-center group"
             >
-              <span data-en="Learn More" data-dari="بیشتر بدانید"
-                >Learn More</span
+              <span data-en="Details" data-dari="جزئیات" data-pashto="تفصیلات"
+                >Details</span
               >
-              <i class="fas fa-arrow-right ml-2"></i>
+              <i
+                class="fas fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"
+              ></i>
             </a>
           </div>
 
-          <div
-            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-orange-700"
-          >
-            <div class="text-orange-700 mb-4">
-              <i class="fas fa-cogs text-5xl"></i>
+          <div class="committee-card rounded-xl p-8">
+            <div
+              class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mb-5"
+            >
+              <i class="fas fa-cogs text-xl text-slate-700"></i>
             </div>
             <h3
-              class="text-2xl font-bold text-gray-800 mb-3"
+              class="text-xl font-medium text-slate-900 mb-3"
               data-en="Engineering"
               data-dari="مهندسی"
+              data-pashto="انجینري"
             >
               Engineering
             </h3>
             <p
-              class="text-gray-600 mb-4"
-              data-en="Technical excellence and professional development"
-              data-dari="تعالی فنی و توسعه حرفه ای"
+              class="text-slate-600 mb-4 text-sm leading-relaxed"
+              data-en="Technical excellence and professional standards"
+              data-dari="تعالی فنی و استانداردهای حرفه‌ای"
+              data-pashto="تخنیکي بریالیتوب او مسلکي معیارونه"
             >
-              Technical excellence and professional development
+              Technical excellence and professional standards
             </p>
             <a
               href="/committee-engineering.html"
-              class="text-orange-700 font-semibold hover:text-orange-800 inline-flex items-center"
+              class="text-amber-600 font-medium text-sm hover:text-amber-700 inline-flex items-center group"
             >
-              <span data-en="Learn More" data-dari="بیشتر بدانید"
-                >Learn More</span
+              <span data-en="Details" data-dari="جزئیات" data-pashto="تفصیلات"
+                >Details</span
               >
-              <i class="fas fa-arrow-right ml-2"></i>
+              <i
+                class="fas fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"
+              ></i>
             </a>
           </div>
 
-          <div
-            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-red-700"
-          >
-            <div class="text-red-700 mb-4">
-              <i class="fas fa-balance-scale text-5xl"></i>
+          <div class="committee-card rounded-xl p-8">
+            <div
+              class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mb-5"
+            >
+              <i class="fas fa-gavel text-xl text-slate-700"></i>
             </div>
             <h3
-              class="text-2xl font-bold text-gray-800 mb-3"
+              class="text-xl font-medium text-slate-900 mb-3"
               data-en="Policy"
               data-dari="سیاست"
+              data-pashto="پالیسي"
             >
               Policy
             </h3>
             <p
-              class="text-gray-600 mb-4"
-              data-en="Governance and strategic direction"
-              data-dari="حکومتداری و جهت استراتژیک"
+              class="text-slate-600 mb-4 text-sm leading-relaxed"
+              data-en="Regulatory compliance and advocacy"
+              data-dari="رعایت مقررات و حمایت"
+              data-pashto="د مقرراتو تعمیل او ملاتړ"
             >
-              Governance and strategic direction
+              Regulatory compliance and advocacy
             </p>
             <a
               href="/committee-policy.html"
-              class="text-red-700 font-semibold hover:text-red-800 inline-flex items-center"
+              class="text-amber-600 font-medium text-sm hover:text-amber-700 inline-flex items-center group"
             >
-              <span data-en="Learn More" data-dari="بیشتر بدانید"
-                >Learn More</span
+              <span data-en="Details" data-dari="جزئیات" data-pashto="تفصیلات"
+                >Details</span
               >
-              <i class="fas fa-arrow-right ml-2"></i>
+              <i
+                class="fas fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"
+              ></i>
             </a>
           </div>
 
-          <div
-            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-pink-700"
-          >
-            <div class="text-pink-700 mb-4">
-              <i class="fas fa-female text-5xl"></i>
+          <div class="committee-card rounded-xl p-8">
+            <div
+              class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mb-5"
+            >
+              <i class="fas fa-female text-xl text-slate-700"></i>
             </div>
             <h3
-              class="text-2xl font-bold text-gray-800 mb-3"
+              class="text-xl font-medium text-slate-900 mb-3"
               data-en="Women"
               data-dari="زنان"
+              data-pashto="ښځې"
             >
               Women
             </h3>
             <p
-              class="text-gray-600 mb-4"
-              data-en="Empowering women engineers and professionals"
-              data-dari="توانمندسازی زنان مهندس و متخصص"
+              class="text-slate-600 mb-4 text-sm leading-relaxed"
+              data-en="Empowering women in engineering"
+              data-dari="توانمندسازی زنان در مهندسی"
+              data-pashto="په انجینرۍ کې د ښځو پیاوړتیا"
             >
-              Empowering women engineers and professionals
+              Empowering women in engineering
             </p>
             <a
               href="/committee-women.html"
-              class="text-pink-700 font-semibold hover:text-pink-800 inline-flex items-center"
+              class="text-amber-600 font-medium text-sm hover:text-amber-700 inline-flex items-center group"
             >
-              <span data-en="Learn More" data-dari="بیشتر بدانید"
-                >Learn More</span
+              <span data-en="Details" data-dari="جزئیات" data-pashto="تفصیلات"
+                >Details</span
               >
-              <i class="fas fa-arrow-right ml-2"></i>
+              <i
+                class="fas fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"
+              ></i>
             </a>
           </div>
 
-          <div
-            class="committee-card bg-white rounded-xl shadow-xl p-8 border-t-4 border-indigo-700"
-          >
-            <div class="text-indigo-700 mb-4">
-              <i class="fas fa-graduation-cap text-5xl"></i>
+          <div class="committee-card rounded-xl p-8">
+            <div
+              class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mb-5"
+            >
+              <i class="fas fa-graduation-cap text-xl text-slate-700"></i>
             </div>
             <h3
-              class="text-2xl font-bold text-gray-800 mb-3"
+              class="text-xl font-medium text-slate-900 mb-3"
               data-en="Education"
               data-dari="آموزش"
+              data-pashto="زده کړه"
             >
               Education
             </h3>
             <p
-              class="text-gray-600 mb-4"
-              data-en="Scholarships and educational programs"
-              data-dari="بورسیه ها و برنامه های آموزشی"
+              class="text-slate-600 mb-4 text-sm leading-relaxed"
+              data-en="Scholarship programs and mentorship"
+              data-dari="برنامه‌های بورسیه و رهنمایی"
+              data-pashto="د بورسیې پروګرامونه او لارښوونه"
             >
-              Scholarships and educational programs
+              Scholarship programs and mentorship
             </p>
             <a
               href="/committee-education.html"
-              class="text-indigo-700 font-semibold hover:text-indigo-800 inline-flex items-center"
+              class="text-amber-600 font-medium text-sm hover:text-amber-700 inline-flex items-center group"
             >
-              <span data-en="Learn More" data-dari="بیشتر بدانید"
-                >Learn More</span
+              <span data-en="Details" data-dari="جزئیات" data-pashto="تفصیلات"
+                >Details</span
               >
-              <i class="fas fa-arrow-right ml-2"></i>
+              <i
+                class="fas fa-arrow-right ml-2 text-xs group-hover:translate-x-1 transition-transform"
+              ></i>
             </a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Statistics Section -->
-    <section class="py-20 bg-emerald-700 text-white">
-      <div class="container mx-auto px-4">
-        <div class="grid md:grid-cols-4 gap-8 text-center">
-          <div>
-            <div class="text-5xl font-bold mb-2">500+</div>
-            <p
-              class="text-xl opacity-90"
-              data-en="Active Members"
-              data-dari="اعضای فعال"
-            >
-              Active Members
-            </p>
-          </div>
-          <div>
-            <div class="text-5xl font-bold mb-2">10</div>
-            <p
-              class="text-xl opacity-90"
-              data-en="Regional Zones"
-              data-dari="مناطق منطقه ای"
-            >
-              Regional Zones
-            </p>
-          </div>
-          <div>
-            <div class="text-5xl font-bold mb-2">7</div>
-            <p
-              class="text-xl opacity-90"
-              data-en="Committees"
-              data-dari="کمیته ها"
-            >
-              Committees
-            </p>
-          </div>
-          <div>
-            <div class="text-5xl font-bold mb-2">25+</div>
-            <p
-              class="text-xl opacity-90"
-              data-en="Years of Service"
-              data-dari="سال خدمت"
-            >
-              Years of Service
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Events Section -->
-    <section class="py-20 bg-gray-50">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
+    <!-- Resources Section -->
+    <section id="resources" class="py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
           <h2
-            class="text-4xl font-bold text-gray-800 mb-4"
-            data-en="Upcoming Events"
-            data-dari="رویدادهای آینده"
+            class="text-4xl font-light text-slate-900 mb-4"
+            data-en="Member Resources"
+            data-dari="منابع اعضا"
+            data-pashto="د غړو سرچینې"
           >
-            Upcoming Events
+            Member Resources
           </h2>
           <p
-            class="text-xl text-gray-600"
-            data-en="Join us in our community gatherings"
-            data-dari="به ما در گردهمایی های اجتماعی بپیوندید"
+            class="text-lg text-slate-600"
+            data-en="Tools and information for professional development"
+            data-dari="ابزار و اطلاعات برای توسعه حرفه‌ای"
+            data-pashto="د مسلکي پرمختګ لپاره وسایل او معلومات"
           >
-            Join us in our community gatherings
+            Tools and information for professional development
           </p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <img
-              src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=400&h=250&fit=crop"
-              alt="Annual Conference"
-              class="w-full h-48 object-cover"
-            />
-            <div class="p-6">
-              <div class="text-emerald-700 text-sm font-semibold mb-2">
-                <i class="fas fa-calendar-alt mr-2"></i>
-                <span data-en="March 15, 2025" data-dari="15 مارچ 2025"
-                  >March 15, 2025</span
-                >
-              </div>
-              <h3
-                class="text-xl font-bold text-gray-800 mb-2"
-                data-en="Annual Conference"
-                data-dari="کنفرانس سالانه"
-              >
-                Annual Conference
-              </h3>
-              <p
-                class="text-gray-600 mb-4"
-                data-en="Join us for our biggest event of the year"
-                data-dari="به ما در بزرگترین رویداد سال بپیوندید"
-              >
-                Join us for our biggest event of the year
-              </p>
-              <a
-                href="#"
-                class="text-emerald-700 font-semibold hover:text-emerald-800"
-              >
-                <span data-en="Register Now" data-dari="اکنون ثبت نام کنید"
-                  >Register Now</span
-                >
-                <i class="fas fa-arrow-right ml-2"></i>
-              </a>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            >
+              <i class="fas fa-book text-2xl text-slate-700"></i>
             </div>
+            <h3
+              class="text-xl font-medium text-slate-900 mb-3"
+              data-en="Publications"
+              data-dari="انتشارات"
+              data-pashto="خپرونې"
+            >
+              Publications
+            </h3>
+            <p
+              class="text-slate-600 mb-4"
+              data-en="Technical papers and industry insights"
+              data-dari="مقالات فنی و بینش‌های صنعتی"
+              data-pashto="تخنیکي مقالې او د صنعت بصیرت"
+            >
+              Technical papers and industry insights
+            </p>
+            <a href="#" class="text-amber-600 font-medium hover:text-amber-700">
+              <span
+                data-en="Access Library"
+                data-dari="دسترسی به کتابخانه"
+                data-pashto="کتابتون ته لاسرسی"
+                >Access Library</span
+              >
+            </a>
           </div>
 
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <img
-              src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=400&h=250&fit=crop"
-              alt="Professional Workshop"
-              class="w-full h-48 object-cover"
-            />
-            <div class="p-6">
-              <div class="text-emerald-700 text-sm font-semibold mb-2">
-                <i class="fas fa-calendar-alt mr-2"></i>
-                <span data-en="February 20, 2025" data-dari="20 فبروری 2025"
-                  >February 20, 2025</span
-                >
-              </div>
-              <h3
-                class="text-xl font-bold text-gray-800 mb-2"
-                data-en="Professional Workshop"
-                data-dari="کارگاه حرفه ای"
-              >
-                Professional Workshop
-              </h3>
-              <p
-                class="text-gray-600 mb-4"
-                data-en="Enhance your engineering skills"
-                data-dari="مهارت های مهندسی خود را تقویت کنید"
-              >
-                Enhance your engineering skills
-              </p>
-              <a
-                href="#"
-                class="text-emerald-700 font-semibold hover:text-emerald-800"
-              >
-                <span data-en="Learn More" data-dari="بیشتر بدانید"
-                  >Learn More</span
-                >
-                <i class="fas fa-arrow-right ml-2"></i>
-              </a>
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            >
+              <i class="fas fa-calendar-alt text-2xl text-slate-700"></i>
             </div>
+            <h3
+              class="text-xl font-medium text-slate-900 mb-3"
+              data-en="Events Calendar"
+              data-dari="تقویم رویدادها"
+              data-pashto="د پیښو کیلنډر"
+            >
+              Events Calendar
+            </h3>
+            <p
+              class="text-slate-600 mb-4"
+              data-en="Upcoming workshops and conferences"
+              data-dari="کارگاه‌ها و کنفرانس‌های آینده"
+              data-pashto="راتلونکي ورکشاپونه او کنفرانسونه"
+            >
+              Upcoming workshops and conferences
+            </p>
+            <a href="#" class="text-amber-600 font-medium hover:text-amber-700">
+              <span
+                data-en="View Schedule"
+                data-dari="مشاهده برنامه"
+                data-pashto="مهالویش وګورئ"
+                >View Schedule</span
+              >
+            </a>
           </div>
 
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <img
-              src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=250&fit=crop"
-              alt="Community Gathering"
-              class="w-full h-48 object-cover"
-            />
-            <div class="p-6">
-              <div class="text-emerald-700 text-sm font-semibold mb-2">
-                <i class="fas fa-calendar-alt mr-2"></i>
-                <span data-en="January 30, 2025" data-dari="30 جنوری 2025"
-                  >January 30, 2025</span
-                >
-              </div>
-              <h3
-                class="text-xl font-bold text-gray-800 mb-2"
-                data-en="Community Gathering"
-                data-dari="گردهمایی اجتماعی"
-              >
-                Community Gathering
-              </h3>
-              <p
-                class="text-gray-600 mb-4"
-                data-en="Connect with fellow members"
-                data-dari="با اعضای دیگر ارتباط برقرار کنید"
-              >
-                Connect with fellow members
-              </p>
-              <a
-                href="#"
-                class="text-emerald-700 font-semibold hover:text-emerald-800"
-              >
-                <span data-en="RSVP Now" data-dari="اکنون پاسخ دهید"
-                  >RSVP Now</span
-                >
-                <i class="fas fa-arrow-right ml-2"></i>
-              </a>
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            >
+              <i class="fas fa-handshake text-2xl text-slate-700"></i>
             </div>
+            <h3
+              class="text-xl font-medium text-slate-900 mb-3"
+              data-en="Mentorship"
+              data-dari="رهنمایی"
+              data-pashto="لارښوونه"
+            >
+              Mentorship
+            </h3>
+            <p
+              class="text-slate-600 mb-4"
+              data-en="Connect with experienced professionals"
+              data-dari="ارتباط با متخصصان با تجربه"
+              data-pashto="د تجربه لرونکو متخصصینو سره اړیکه"
+            >
+              Connect with experienced professionals
+            </p>
+            <a href="#" class="text-amber-600 font-medium hover:text-amber-700">
+              <span
+                data-en="Find Mentor"
+                data-dari="یافتن مربی"
+                data-pashto="ښوونکی ومومئ"
+                >Find Mentor</span
+              >
+            </a>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-white">
-      <div class="container mx-auto px-4">
+    <section id="contact" class="py-24 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2
+            class="text-4xl font-light text-slate-900 mb-4"
+            data-en="Contact Information"
+            data-dari="اطلاعات تماس"
+            data-pashto="د اړیکې معلومات"
+          >
+            Contact Information
+          </h2>
+          <p
+            class="text-lg text-slate-600"
+            data-en="Connect with our administration team"
+            data-dari="با تیم اداری ما ارتباط برقرار کنید"
+            data-pashto="زموږ د ادارې له ټیم سره اړیکه ونیسئ"
+          >
+            Connect with our administration team
+          </p>
+        </div>
+
         <div class="max-w-4xl mx-auto">
-          <div class="text-center mb-12">
-            <h2
-              class="text-4xl font-bold text-gray-800 mb-4"
-              data-en="Get In Touch"
-              data-dari="در تماس باشید"
-            >
-              Get In Touch
-            </h2>
-            <p
-              class="text-xl text-gray-600"
-              data-en="We're here to help and answer any questions"
-              data-dari="ما اینجا هستیم تا کمک کنیم و به سوالات پاسخ دهیم"
-            >
-              We're here to help and answer any questions
-            </p>
-          </div>
-
-          <div class="grid md:grid-cols-3 gap-8 mb-12">
-            <div class="text-center">
-              <div
-                class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-              >
-                <i class="fas fa-map-marker-alt text-2xl text-emerald-700"></i>
+          <div
+            class="bg-white rounded-2xl shadow-sm border border-gray-200 p-12"
+          >
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+              <div class="text-center">
+                <div
+                  class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="fas fa-envelope text-slate-700"></i>
+                </div>
+                <h3
+                  class="font-medium text-slate-900 mb-2"
+                  data-en="Email"
+                  data-dari="ایمیل"
+                  data-pashto="بریښنالیک"
+                >
+                  Email
+                </h3>
+                <p class="text-slate-600 text-sm"></p>
               </div>
-              <h3
-                class="font-semibold text-lg mb-2"
-                data-en="Address"
-                data-dari="آدرس"
-              >
-                Address
-              </h3>
-              <p class="text-gray-600">
-                123 Engineering Way<br />Sacramento, CA 95814
-              </p>
+
+              <div class="text-center">
+                <div
+                  class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="fas fa-phone text-slate-700"></i>
+                </div>
+                <h3
+                  class="font-medium text-slate-900 mb-2"
+                  data-en="Phone"
+                  data-dari="تلفن"
+                  data-pashto="ټیلیفون"
+                >
+                  Phone
+                </h3>
+                <p class="text-slate-600 text-sm">###-###-####</p>
+              </div>
+
+              <div class="text-center">
+                <div
+                  class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="fas fa-map-marker-alt text-slate-700"></i>
+                </div>
+                <h3
+                  class="font-medium text-slate-900 mb-2"
+                  data-en="Office"
+                  data-dari="دفتر"
+                  data-pashto="دفتر"
+                >
+                  Office
+                </h3>
+                <p class="text-slate-600 text-sm">Sacramento, CA</p>
+              </div>
             </div>
 
-            <div class="text-center">
-              <div
-                class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-              >
-                <i class="fas fa-phone text-2xl text-emerald-700"></i>
-              </div>
-              <h3
-                class="font-semibold text-lg mb-2"
-                data-en="Phone"
-                data-dari="تلفن"
-              >
-                Phone
-              </h3>
-              <p class="text-gray-600">(916) 555-0123</p>
-            </div>
+            <div class="section-divider mb-12"></div>
 
-            <div class="text-center">
-              <div
-                class="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-              >
-                <i class="fas fa-envelope text-2xl text-emerald-700"></i>
-              </div>
-              <h3
-                class="font-semibold text-lg mb-2"
-                data-en="Email"
-                data-dari="ایمیل"
-              >
-                Email
-              </h3>
-              <p class="text-gray-600">info@emca-ca.org</p>
-            </div>
-          </div>
-
-          <!-- Simple Contact Form -->
-          <div class="bg-gray-50 rounded-2xl p-8">
             <form class="space-y-6">
               <div class="grid md:grid-cols-2 gap-6">
                 <div>
                   <label
-                    class="block text-gray-700 font-semibold mb-2"
-                    data-en="Your Name"
-                    data-dari="نام شما"
-                    >Your Name</label
+                    class="block text-sm font-medium text-slate-700 mb-2"
+                    data-en="Full Name"
+                    data-dari="نام کامل"
+                    data-pashto="بشپړ نوم"
+                    >Full Name</label
                   >
                   <input
                     type="text"
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:outline-none text-lg"
-                    placeholder="Enter your name"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
                   />
                 </div>
                 <div>
                   <label
-                    class="block text-gray-700 font-semibold mb-2"
-                    data-en="Your Email"
-                    data-dari="ایمیل شما"
-                    >Your Email</label
+                    class="block text-sm font-medium text-slate-700 mb-2"
+                    data-en="Email Address"
+                    data-dari="آدرس ایمیل"
+                    data-pashto="بریښنالیک پته"
+                    >Email Address</label
                   >
                   <input
                     type="email"
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:outline-none text-lg"
-                    placeholder="Enter your email"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+                  />
+                </div>
+              </div>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 mb-2"
+                    data-en="Full Name"
+                    data-dari="نام کامل"
+                    data-pashto="بشپړ نوم"
+                    >Phone Number</label
+                  >
+                  <input
+                    type="text"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 mb-2"
+                    data-en="Email Address"
+                    data-dari="آدرس ایمیل"
+                    data-pashto="بریښنالیک پته"
+                    >University in Afghanistan</label
+                  >
+                  <input
+                    type="text"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 mb-2"
+                    data-en="Email Address"
+                    data-dari="آدرس ایمیل"
+                    data-pashto="بریښنالیک پته"
+                    >Graduation Year</label
+                  >
+                  <input
+                    type="text"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium text-slate-700 mb-2"
+                    data-en="Email Address"
+                    data-dari="آدرس ایمیل"
+                    data-pashto="بریښنالیک پته"
+                    >Department / Field</label
+                  >
+                  <input
+                    type="text"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
                   />
                 </div>
               </div>
 
               <div>
                 <label
-                  class="block text-gray-700 font-semibold mb-2"
+                  class="block text-sm font-medium text-slate-700 mb-2"
+                  data-en="Subject"
+                  data-dari="موضوع"
+                  data-pashto="موضوع"
+                  >Subject</label
+                >
+                <input
+                  type="text"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium text-slate-700 mb-2"
                   data-en="Message"
                   data-dari="پیام"
+                  data-pashto="پیغام"
                   >Message</label
                 >
                 <textarea
-                  class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-emerald-500 focus:outline-none text-lg"
                   rows="5"
-                  placeholder="Type your message here..."
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition resize-none"
                 ></textarea>
               </div>
 
-              <button
-                type="submit"
-                class="bg-emerald-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-emerald-800 transition-colors w-full md:w-auto"
-              >
-                <i class="fas fa-paper-plane mr-2"></i>
-                <span data-en="Send Message" data-dari="ارسال پیام"
-                  >Send Message</span
-                >
-              </button>
+              <div>
+                <button type="submit" class="btn-primary rounded-lg">
+                  <span
+                    data-en="Send Message"
+                    data-dari="ارسال پیام"
+                    data-pashto="پیغام ولیږئ"
+                    >Send Message</span
+                  >
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -1223,64 +1544,77 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
-      <div class="container mx-auto px-4">
-        <div class="grid md:grid-cols-4 gap-8 mb-8">
+    <footer class="bg-slate-900 text-gray-300">
+      <div class="max-w-7xl mx-auto px-6 py-16">
+        <div class="grid md:grid-cols-4 gap-8 mb-12">
           <div>
-            <h3 class="text-xl font-bold mb-4">EMCA</h3>
+            <div class="flex items-center mb-4">
+              <div
+                class="w-10 h-10 bg-white rounded-lg flex items-center justify-center mr-3"
+              >
+                <span class="text-slate-900 font-bold">EMCA</span>
+              </div>
+              <span class="text-white font-medium">امکا</span>
+            </div>
             <p
-              class="text-gray-400"
-              data-en="Afghan American Engineers in California - Building bridges between tradition and innovation"
-              data-dari="انجینران افغانستان در کالیفورنیا - ساختن پل بین سنت و نوآوری"
+              class="text-sm leading-relaxed"
+              data-en="Afghan American Engineers California Chapter - Building bridges between tradition and innovation."
+              data-dari="انجینران افغان امریکایی بخش کالیفورنیا - ساختن پل بین سنت و نوآوری."
+              data-pashto="افغان امریکایي انجینران د کالیفورنیا څانګه - د دود او نوښت ترمنځ پلونه جوړول."
             >
-              Afghan American Engineers in California - Building bridges between
-              tradition and innovation
+              Afghan American Engineers California Chapter - Building bridges
+              between tradition and innovation.
             </p>
           </div>
 
           <div>
             <h4
-              class="text-lg font-semibold mb-4"
+              class="text-white font-medium mb-4"
               data-en="Quick Links"
-              data-dari="لینک های سریع"
+              data-dari="لینک‌های سریع"
+              data-pashto="ګړندي لینکونه"
             >
               Quick Links
             </h4>
-            <ul class="space-y-2 text-gray-400">
+            <ul class="space-y-2 text-sm">
               <li>
                 <a
                   href="#zones"
-                  class="hover:text-white transition-colors"
-                  data-en="Zones"
-                  data-dari="مناطق"
-                  >Zones</a
+                  class="hover:text-white transition"
+                  data-en="Regional Zones"
+                  data-dari="مناطق منطقوی"
+                  data-pashto="سیمه ییز زونونه"
+                  >Regional Zones</a
                 >
               </li>
               <li>
                 <a
                   href="#committees"
-                  class="hover:text-white transition-colors"
+                  class="hover:text-white transition"
                   data-en="Committees"
-                  data-dari="کمیته ها"
+                  data-dari="کمیته‌ها"
+                  data-pashto="کمیټې"
                   >Committees</a
                 >
               </li>
               <li>
                 <a
                   href="#conference"
-                  class="hover:text-white transition-colors"
-                  data-en="Conference Room"
-                  data-dari="اتاق کنفرانس"
-                  >Conference Room</a
+                  class="hover:text-white transition"
+                  data-en="Conference Hall"
+                  data-dari="تالار کنفرانس"
+                  data-pashto="د کنفرانس تالار"
+                  >Conference Hall</a
                 >
               </li>
               <li>
                 <a
-                  href="#contact"
-                  class="hover:text-white transition-colors"
-                  data-en="Contact"
-                  data-dari="تماس"
-                  >Contact</a
+                  href="#resources"
+                  class="hover:text-white transition"
+                  data-en="Resources"
+                  data-dari="منابع"
+                  data-pashto="سرچینې"
+                  >Resources</a
                 >
               </li>
             </ul>
@@ -1288,47 +1622,52 @@
 
           <div>
             <h4
-              class="text-lg font-semibold mb-4"
-              data-en="Resources"
-              data-dari="منابع"
+              class="text-white font-medium mb-4"
+              data-en="Membership"
+              data-dari="عضویت"
+              data-pashto="غړیتوب"
             >
-              Resources
+              Membership
             </h4>
-            <ul class="space-y-2 text-gray-400">
+            <ul class="space-y-2 text-sm">
               <li>
                 <a
                   href="#"
-                  class="hover:text-white transition-colors"
-                  data-en="Member Portal"
-                  data-dari="پورتال اعضا"
-                  >Member Portal</a
+                  class="hover:text-white transition"
+                  data-en="Benefits"
+                  data-dari="مزایا"
+                  data-pashto="ګټې"
+                  >Benefits</a
                 >
               </li>
               <li>
                 <a
                   href="#"
-                  class="hover:text-white transition-colors"
-                  data-en="Documents"
-                  data-dari="اسناد"
-                  >Documents</a
+                  class="hover:text-white transition"
+                  data-en="Application"
+                  data-dari="درخواست"
+                  data-pashto="غوښتنلیک"
+                  >Application</a
                 >
               </li>
               <li>
                 <a
                   href="#"
-                  class="hover:text-white transition-colors"
-                  data-en="Newsletter"
-                  data-dari="خبرنامه"
-                  >Newsletter</a
+                  class="hover:text-white transition"
+                  data-en="Renewal"
+                  data-dari="تمدید"
+                  data-pashto="نوي کول"
+                  >Renewal</a
                 >
               </li>
               <li>
                 <a
                   href="#"
-                  class="hover:text-white transition-colors"
-                  data-en="FAQ"
-                  data-dari="سوالات متداول"
-                  >FAQ</a
+                  class="hover:text-white transition"
+                  data-en="Directory"
+                  data-dari="فهرست"
+                  data-pashto="لارښود"
+                  >Directory</a
                 >
               </li>
             </ul>
@@ -1336,47 +1675,51 @@
 
           <div>
             <h4
-              class="text-lg font-semibold mb-4"
-              data-en="Connect With Us"
-              data-dari="با ما در ارتباط باشید"
+              class="text-white font-medium mb-4"
+              data-en="Connect"
+              data-dari="ارتباط"
+              data-pashto="اړیکه"
             >
-              Connect With Us
+              Connect
             </h4>
-            <div class="flex space-x-4">
+            <div class="flex space-x-3">
               <a
                 href="#"
-                class="bg-gray-800 w-12 h-12 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors"
+                class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-slate-700 transition"
               >
-                <i class="fab fa-facebook-f text-xl"></i>
+                <i class="fab fa-linkedin-in text-sm"></i>
               </a>
               <a
                 href="#"
-                class="bg-gray-800 w-12 h-12 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors"
+                class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-slate-700 transition"
               >
-                <i class="fab fa-twitter text-xl"></i>
+                <i class="fab fa-facebook-f text-sm"></i>
               </a>
               <a
                 href="#"
-                class="bg-gray-800 w-12 h-12 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors"
+                class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-slate-700 transition"
               >
-                <i class="fab fa-linkedin-in text-xl"></i>
+                <i class="fab fa-twitter text-sm"></i>
               </a>
               <a
                 href="#"
-                class="bg-gray-800 w-12 h-12 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors"
+                class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-slate-700 transition"
               >
-                <i class="fab fa-instagram text-xl"></i>
+                <i class="fab fa-instagram text-sm"></i>
               </a>
             </div>
           </div>
         </div>
 
-        <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+        <div class="section-divider mb-8"></div>
+
+        <div class="text-center text-sm">
           <p>
-            &copy; 2025 EMCA - Afghan American Engineers in California.
+            &copy; 2025 EMCA - Afghan American Engineers California Chapter.
             <span
               data-en="All rights reserved."
               data-dari="تمام حقوق محفوظ است."
+              data-pashto="ټول حقونه خوندي دي."
               >All rights reserved.</span
             >
           </p>
@@ -1385,30 +1728,34 @@
     </footer>
 
     <script>
-      // Language toggle functionality
+      // Language functionality
       let currentLang = "en";
 
-      function toggleLanguage() {
-        currentLang = currentLang === "en" ? "dari" : "en";
-        document.getElementById("langToggleText").textContent =
-          currentLang === "en" ? "دری" : "English";
+      function changeLanguage(lang) {
+        currentLang = lang;
 
-        // Update text direction
-        document.documentElement.dir = currentLang === "dari" ? "rtl" : "ltr";
-        document.documentElement.lang = currentLang === "dari" ? "fa" : "en";
+        // Update text direction and font
+        document.documentElement.dir =
+          lang === "dari" || lang === "pashto" ? "rtl" : "ltr";
+        document.documentElement.lang =
+          lang === "dari" ? "fa" : lang === "pashto" ? "ps" : "en";
+
+        // Update body font class
+        document.body.classList.remove("font-dari", "font-pashto");
+        if (lang === "dari") {
+          document.body.classList.add("font-dari");
+        } else if (lang === "pashto") {
+          document.body.classList.add("font-pashto");
+        }
 
         // Update all translatable elements
-        const elements = document.querySelectorAll("[data-en][data-dari]");
+        const elements = document.querySelectorAll("[data-en]");
         elements.forEach((el) => {
-          el.textContent = el.getAttribute(`data-${currentLang}`);
+          const translation = el.getAttribute(`data-${lang}`);
+          if (translation) {
+            el.textContent = translation;
+          }
         });
-
-        // Add Dari font class to body
-        if (currentLang === "dari") {
-          document.body.classList.add("font-dari");
-        } else {
-          document.body.classList.remove("font-dari");
-        }
       }
 
       // Mobile menu toggle
@@ -1417,7 +1764,7 @@
         menu.classList.toggle("hidden");
       }
 
-      // Smooth scroll for anchor links
+      // Smooth scroll
       document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener("click", function (e) {
           e.preventDefault();
@@ -1427,16 +1774,15 @@
               behavior: "smooth",
               block: "start",
             });
-            // Close mobile menu if open
             document.getElementById("mobileMenu").classList.add("hidden");
           }
         });
       });
 
-      // Add scroll effect to navigation
+      // Add subtle scroll effect
       window.addEventListener("scroll", function () {
         const nav = document.querySelector("nav");
-        if (window.scrollY > 50) {
+        if (window.scrollY > 20) {
           nav.classList.add("shadow-lg");
         } else {
           nav.classList.remove("shadow-lg");
